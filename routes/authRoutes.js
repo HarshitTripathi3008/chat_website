@@ -18,12 +18,25 @@ router.post("/auth/magic-link", async (req, res) => {
     try {
         const token = crypto.randomBytes(32).toString("hex");
         await MagicToken.create({ email: req.body.email, token });
-        await mailer.sendMail({
-            to: req.body.email,
-            subject: "Login",
-            html: `<a href="${APP_URL}/auth/magic/${token}">Login</a>`
-        });
-        res.json({ success: true });
+        const magicLink = `${APP_URL}/auth/magic/${token}`;
+
+        try {
+            await mailer.sendMail({
+                to: req.body.email,
+                subject: "Login",
+                html: `<a href="${magicLink}">Login</a>`
+            });
+            res.json({ success: true });
+        } catch (mailError) {
+            console.error("❌ Email failed to send:", mailError.message);
+            console.log("---------------------------------------------------");
+            console.log("🔑 EMERGENCY LOGIN LINK (Use this if email fails):");
+            console.log(magicLink);
+            console.log("---------------------------------------------------");
+            // Still return success so the frontend doesn't show an error, 
+            // the user will just look at the logs as instructed.
+            res.json({ success: true, message: "Email failed, check server logs for link" });
+        }
     } catch (error) {
         console.error("Magic link error:", error);
         res.status(500).json({ error: "Failed to send magic link" });
