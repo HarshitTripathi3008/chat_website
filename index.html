@@ -33,9 +33,13 @@
   <!-- ================= MAIN APP ================= -->
   <div class="app" id="app" style="display:none">
     <!-- SIDEBAR -->
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
       <div class="sidebar-header">
-        <div>Chats</div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <!-- Mobile Close / Desktop Toggle (optional, but requested hamburger) -->
+          <!-- Actually user wants hamburger to retact sidebar. -->
+          <div>Chats</div>
+        </div>
         <div style="display: flex; gap: 8px;">
           <button class="new-chat-btn" onclick="showSettingsModal()"
             style="background: transparent; color: var(--text-secondary); padding: 5px;">⚙️</button>
@@ -62,9 +66,17 @@
     </div>
 
     <!-- CHAT AREA -->
-    <div class="chat-area">
+    <div class="chat-area" id="chatArea">
       <div class="chat-header">
         <div class="chat-header-left">
+          <!-- Back Button (Mobile Only) -->
+          <button class="back-btn" id="mobileBackBtn" onclick="app.showSidebar()"
+            style="display: none; background: transparent; border: none; font-size: 20px; color: var(--text-primary); margin-right: 10px; cursor: pointer;">←</button>
+
+          <!-- Hamburger Menu (Desktop Toggle) -->
+          <button class="sidebar-toggle-btn" id="desktopSidebarToggle" onclick="app.toggleSidebar()"
+            style="background: transparent; border: none; font-size: 20px; color: var(--text-primary); margin-right: 10px; cursor: pointer;">☰</button>
+
           <div class="chat-avatar" id="currentChatAvatar">G</div>
           <div>
             <div id="currentChatName">Community Chat</div>

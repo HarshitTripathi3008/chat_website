@@ -14,6 +14,16 @@ class ChatApp {
         this.channels = [];
         this.onlineUsers = [];
         this.currentTab = 'channels';
+        this.isMobile = window.innerWidth <= 900;
+
+        // Handle resize
+        window.addEventListener('resize', () => {
+            this.isMobile = window.innerWidth <= 900;
+            if (!this.isMobile) {
+                // Reset styles on desktop if needed
+                document.getElementById('sidebar').classList.remove('mobile-hidden');
+            }
+        });
 
     }
 
@@ -547,11 +557,8 @@ class ChatApp {
         await this.loadConversationMessages(conversationId);
 
         // Highlight selected conversation
-        document.querySelectorAll('.chat-item').forEach(item => item.classList.remove('active'));
-        if (clickedElement) {
-            const chatItem = clickedElement.closest('.chat-item');
-            if (chatItem) chatItem.classList.add('active');
-        }
+        const chatItem = clickedElement.closest('.chat-item');
+        if (chatItem) chatItem.classList.add('active');
     }
 
 
@@ -635,14 +642,17 @@ class ChatApp {
                 if (!otherUser) return '';
 
                 return `
-                            <div class="user-item" onclick="app.sendRoomInvite('${dm._id}')" style="cursor: pointer; padding: 12px; border-radius: 8px; margin-bottom: 8px; background: var(--bg-secondary); transition: all 0.2s; display: flex; align-items: center;">
-                                <div class="chat-avatar" style="width: 36px; height: 36px; line-height: 36px; margin-right: 12px;">
-                                    ${this.getAvatar(otherUser.name, otherUser.avatar)}
+                            <div class="user-item" style="padding: 12px; border-radius: 8px; margin-bottom: 8px; background: var(--bg-secondary); display: flex; align-items: center; justify-content: space-between;">
+                                <div style="display: flex; align-items: center;">
+                                    <div class="chat-avatar" style="width: 36px; height: 36px; line-height: 36px; margin-right: 12px;">
+                                        ${this.getAvatar(otherUser.name, otherUser.avatar)}
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 500;">${otherUser.name}</div>
+                                        <div style="font-size: 11px; color: var(--text-secondary);">${otherUser.email}</div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <div style="font-weight: 500;">${otherUser.name}</div>
-                                    <div style="font-size: 11px; color: var(--text-secondary);">${otherUser.email}</div>
-                                </div>
+                                <button onclick="app.sendRoomInvite('${dm._id}')" class="header-btn" style="font-size: 13px; padding: 6px 16px;">Invite</button>
                             </div>
                         `;
             }).join('')}
@@ -774,48 +784,62 @@ class ChatApp {
         }
     }
 
+    // ===== SIDEBAR NAVIGATION =====
+    toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const chatArea = document.getElementById('chatArea');
+
+        if (this.isMobile) {
+            // Mobile: Toggle visibility
+            sidebar.classList.toggle('mobile-hidden');
+        } else {
+            // Desktop: Toggle collapsed state
+            sidebar.classList.toggle('closed');
+            chatArea.classList.toggle('expanded');
+        }
+    }
+
+    showSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar) sidebar.classList.remove('mobile-hidden');
+    }
+
+    hideSidebarMobile() {
+        if (this.isMobile) {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) sidebar.classList.add('mobile-hidden');
+        }
+    }
+
     async renderSavedMemes() {
         try {
             const res = await fetch('/memes/saved');
             if (!res.ok) throw new Error('Failed to fetch saved memes');
             const savedIds = await res.json();
-
-            // For now, we will just fetch the messages again or assuming the IDs IS the message object
-            // The route returns `user.savedMessages` which are IDs if not populated, OR objects if populated.
-            // channelRoutes.js populates them!
-            // { path: 'savedMessages', populate: { path: 'userId', select: 'name avatar' } }
-
             const messages = savedIds;
 
             if (messages.length === 0) {
                 document.getElementById('chatList').innerHTML =
-                    `<div style="padding: 20px; text-align: center; color: var(--text-secondary);">No saved memes yet.</div>`;
+                    '<div style="padding: 20px; text-align: center; color: var(--text-secondary);">No saved memes yet.</div>';
                 return;
             }
-
-            // Render saved memes as a list in the sidebar (or maybe detailed view?)
-            // Since they are messages, we can reuse addMessage if we were putting them in the chat area.
-            // But we want to list them in the SIDEBAR list? 
-            // Actually, usually "Saved" is a list of items. 
-            // Let's render them as preview cards in the sidebar.
 
             const html = messages.map(msg => {
                 const isImage = msg.type === 'image';
                 const preview = isImage ? '📷 Image' : msg.text;
                 const source = msg.metadata && msg.metadata.source ? msg.metadata.source : 'Unknown Source';
+                // Use single quotes for HTML attributes, escaping inner single quotes if necessary
                 return `
-                <div class="chat-item" onclick="app.viewSavedMeme('${msg._id}')">
-                    <div class="chat-avatar" style="background: var(--telegram-blue); color: white;">💾</div>
-                    <div class="chat-info">
-                        <div class="chat-name">${source}</div>
-                        <div class="chat-last">${preview}</div>
-                    </div>
-                </div>`;
+                    <div class="chat-item" onclick="app.viewSavedMeme('${msg._id}')">
+                        <div class="chat-avatar" style="background: var(--telegram-blue); color: white;">💾</div>
+                        <div class="chat-info">
+                            <div class="chat-name">${source}</div>
+                            <div class="chat-last">${preview}</div>
+                        </div>
+                    </div>`;
             }).join('');
 
             document.getElementById('chatList').innerHTML = html;
-
-            // Store saved messages locally to view them
             this.savedMessagesCache = messages;
 
         } catch (error) {

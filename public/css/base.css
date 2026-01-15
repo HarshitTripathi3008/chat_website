@@ -476,22 +476,77 @@ body {
   background: #f1f1f1;
 }
 
+/* ===== SIDEBAR TRANSITIONS ===== */
+.sidebar {
+  transition: width 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar.closed {
+  width: 0;
+  opacity: 0;
+  overflow: hidden;
+  border: none;
+}
+
+.chat-area {
+  transition: width 0.3s ease;
+  width: 70%;
+  /* Default */
+}
+
+.chat-area.expanded {
+  width: 100%;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
+  .app {
+    position: relative;
+    overflow: hidden;
+  }
+
   .sidebar {
     width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 10;
+    transform: translateX(0);
+  }
+
+  /* When sidebar is "closed" on mobile, it slides out or hides */
+  .sidebar.mobile-hidden {
+    transform: translateX(-100%);
+    opacity: 0;
+    display: none;
+    /* Hide to prevent interactions */
   }
 
   .chat-area {
-    display: none;
-  }
-
-  .chat-area.active {
-    display: flex;
     width: 100%;
+    height: 100%;
+    display: flex;
+    /* Always flex, but might be covered by sidebar */
   }
 
-  .sidebar.hide {
-    display: none;
+  /* Show/Hide Buttons Logic */
+  #desktopSidebarToggle {
+    display: none !important;
+    /* Hide desktop hamburger on mobile */
+  }
+
+  #mobileBackBtn {
+    display: block !important;
+    /* Show back button on mobile */
+  }
+
+  .message {
+    max-width: 85%;
+  }
+
+  .chat-input {
+    padding: 8px;
+    /* Slightly compact on mobile */
   }
 }
