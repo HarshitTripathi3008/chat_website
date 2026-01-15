@@ -63,31 +63,39 @@ let pub, sub;
 
 (async () => {
   try {
-    const redisClient = createClient({ url: process.env.REDIS_URL || 'redis://localhost:6379' });
-    redisClient.on('error', (err) => {
-      console.log('Redis Client Error', err);
-      useRedis = false;
-    });
+    if (process.env.REDIS_URL) {
+      const redisClient = createClient({ url: process.env.REDIS_URL });
+      redisClient.on('error', (err) => {
+        console.log('Redis Client Error', err);
+        useRedis = false;
+      });
 
-    await redisClient.connect();
+      await redisClient.connect();
 
-    // Create pub/sub clients
-    pub = redisClient.duplicate();
-    sub = redisClient.duplicate();
-    await pub.connect();
-    await sub.connect();
+      // Create pub/sub clients
+      pub = redisClient.duplicate();
+      sub = redisClient.duplicate();
+      await pub.connect();
+      await sub.connect();
 
-    console.log("✅ Redis connected");
-    useRedis = true;
+      console.log("✅ Redis connected");
+      useRedis = true;
 
-    // Make pub/redis available to routes
-    app.set("pub", pub);
+      // Make pub/redis available to routes
+      app.set("pub", pub);
 
-    // Initialize Socket Logic with Redis
-    socketHandler(io, useRedis, pub, sub);
+      // Initialize Socket Logic with Redis
+      socketHandler(io, useRedis, pub, sub);
+    } else {
+      throw new Error("Redis URL not provided");
+    }
 
   } catch (err) {
-    console.log("⚠️  Redis not available - running in single-server mode");
+    if (process.env.REDIS_URL) {
+      console.log("⚠️  Redis not available - running in single-server mode");
+    } else {
+      console.log("ℹ️  Running in single-server mode (Redis not configured)");
+    }
     // Initialize Socket Logic without Redis
     socketHandler(io, false, null, null);
   }
