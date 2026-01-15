@@ -10,7 +10,7 @@ const passport = require("../config/passport");
 
 
 const router = express.Router();
-const APP_URL = process.env.APP_URL || `http://localhost:${process.env.PORT || 3000}`;
+const APP_URL = process.env.APP_URL || "https://chat-website-mdqr.onrender.com";
 
 /* ---------- MAGIC LINK ---------- */
 router.post("/auth/magic-link", async (req, res) => {
