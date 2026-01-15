@@ -4,7 +4,7 @@ const crypto = require("crypto");
 const User = require("../models/User");
 const MagicToken = require("../models/MagicToken");
 const Invitation = require("../models/Invitation");
-const mailer = require("../utils/mailer");
+const { sendEmail } = require("../utils/sendgrid");
 const { processInvitation } = require("../utils/helpers");
 const passport = require("../config/passport");
 
@@ -21,10 +21,10 @@ router.post("/auth/magic-link", async (req, res) => {
         const magicLink = `${APP_URL}/auth/magic/${token}`;
 
         try {
-            await mailer.sendMail({
+            await sendEmail({
                 to: req.body.email,
-                subject: "Login",
-                html: `<a href="${magicLink}">Login</a>`
+                subject: "Login to Chat App",
+                html: `<p>Click the link below to login:</p><a href="${magicLink}">Login</a><p>Link expires in 15 minutes.</p>`
             });
             res.json({ success: true });
         } catch (mailError) {
