@@ -533,22 +533,12 @@ class ChatApp {
                 inviteBtn.className = 'header-btn primary';
                 inviteBtn.textContent = 'Invite';
                 inviteBtn.style.marginLeft = '8px';
-                inviteBtn.onclick = () => this.generateRoomInvite(conversationId);
+                inviteBtn.onclick = () => this.showRoomInviteModal();
                 headerRight.appendChild(inviteBtn);
             }
 
         } else {
-
-
-            // Show Invite button for rooms
-            if (type === 'group') {
-                const inviteBtn = document.createElement('button');
-                inviteBtn.className = 'header-btn';
-                inviteBtn.innerHTML = '<span>➕ Invite</span>';
-                inviteBtn.onclick = () => this.showRoomInviteModal();
-                headerRight.appendChild(inviteBtn);
-            }
-            // Show input
+            // Direct message logic or fallback
             document.querySelector('.chat-input').style.display = 'flex';
         }
 
