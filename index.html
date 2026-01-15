@@ -34,15 +34,17 @@
   <div class="app" id="app" style="display:none">
     <!-- SIDEBAR -->
     <div class="sidebar" id="sidebar">
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <!-- Mobile Close / Desktop Toggle (optional, but requested hamburger) -->
-        <!-- Actually user wants hamburger to retact sidebar. -->
-        <div>Chats</div>
-      </div>
-      <div style="display: flex; gap: 8px;">
-        <button class="new-chat-btn" onclick="showSettingsModal()"
-          style="background: transparent; color: var(--text-secondary); padding: 5px;">⚙️</button>
-        <button class="new-chat-btn" onclick="showNewChatModal()">+ New</button>
+      <div class="sidebar-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <!-- Mobile Close / Desktop Toggle (optional, but requested hamburger) -->
+          <!-- Actually user wants hamburger to retact sidebar. -->
+          <div>Chats</div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="new-chat-btn" onclick="showSettingsModal()"
+            style="background: transparent; color: var(--text-secondary); padding: 5px;">⚙️</button>
+          <button class="new-chat-btn" onclick="showNewChatModal()">+ New</button>
+        </div>
       </div>
     </div>
 
