@@ -9,11 +9,13 @@ const { processInvitation } = require("../utils/helpers");
 const passport = require("../config/passport");
 
 
+const { authLimiter } = require("../middleware/rateLimiter");
+
 const router = express.Router();
 const APP_URL = process.env.APP_URL || "https://chat-website-mdqr.onrender.com";
 
 /* ---------- MAGIC LINK ---------- */
-router.post("/auth/magic-link", async (req, res) => {
+router.post("/auth/magic-link", authLimiter, async (req, res) => {
 
     try {
         const token = crypto.randomBytes(32).toString("hex");

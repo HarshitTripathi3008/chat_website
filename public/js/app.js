@@ -559,12 +559,30 @@ class ChatApp {
     }
 
     async loadConversationMessages(conversationId) {
+        // Show Skeleton Loading
+        const messagesEl = document.getElementById('messages');
+        messagesEl.innerHTML = Array(5).fill(0).map((_, i) => `
+            <div class="skeleton-message" style="opacity: ${1 - (i * 0.15)}">
+                <div class="skeleton-avatar skeleton"></div>
+                <div style="flex:1">
+                    <div class="skeleton-text skeleton" style="width: 30%"></div>
+                    <div class="skeleton-text skeleton" style="height: 40px; width: ${Math.random() * 40 + 40}%"></div>
+                </div>
+            </div>
+        `).join('');
+
         try {
             const res = await fetch(`/conversations/${conversationId}/messages`);
             if (!res.ok) throw new Error('Failed to load conversation messages');
             const msgs = await res.json();
-            document.getElementById('messages').innerHTML = '';
-            msgs.forEach(msg => this.addMessage(msg));
+
+            messagesEl.innerHTML = ''; // Clear skeleton
+
+            if (msgs.length === 0) {
+                messagesEl.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">No messages here yet. Say hi! 👋</div>';
+            } else {
+                msgs.forEach(msg => this.addMessage(msg));
+            }
 
             // Auto-scroll to latest message
             setTimeout(() => this.scrollToBottom(), 100);
@@ -574,9 +592,8 @@ class ChatApp {
         } catch (error) {
             console.error('Error loading conversation messages:', error);
             Toast.show('Failed to load messages for this conversation.', 'error');
+            messagesEl.innerHTML = ''; // Clear skeleton on error
         }
-
-
     }
 
     switchTab(tab) {

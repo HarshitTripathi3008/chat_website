@@ -37,7 +37,7 @@ router.post("/upload", requireAuth, upload.single("file"), async (req, res) => {
             type,
             file: {
                 name: req.file.originalname,
-                url: `/uploads/${req.file.filename}`
+                url: req.file.path // Cloudinary URL
             }
         };
 
@@ -65,7 +65,7 @@ router.post("/upload/voice", requireAuth, upload.single("audio"), async (req, re
             username: user.name,
             type: "voice",
             file: {
-                url: `/uploads/${req.file.filename}`,
+                url: req.file.path, // Cloudinary URL
                 duration: parseFloat(req.body.duration),
                 waveform: JSON.parse(req.body.waveform || '[]')
             }

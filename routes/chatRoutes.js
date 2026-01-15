@@ -8,6 +8,7 @@ const RoomInvite = require("../models/RoomInvite");
 const Invitation = require("../models/Invitation");
 const mailer = require("../utils/mailer");
 const { requireAuth } = require("../middleware/authMiddleware");
+const { inviteLimiter } = require("../middleware/rateLimiter");
 const { processInvitation } = require("../utils/helpers");
 
 const router = express.Router();
@@ -298,7 +299,7 @@ router.get("/rooms/join/:token", async (req, res) => {
 });
 
 /* ---------- INVITATIONS (EMAIL) ---------- */
-router.post("/invitations/send", requireAuth, async (req, res) => {
+router.post("/invitations/send", requireAuth, inviteLimiter, async (req, res) => {
     const { toEmail } = req.body;
     const fromUser = await User.findById(req.session.userId);
 
