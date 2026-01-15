@@ -65,29 +65,35 @@ router.get("/auth/magic/:token", async (req, res) => {
 });
 
 /* ---------- GOOGLE AUTH ---------- */
-router.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+    router.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 
-router.get("/auth/google/callback",
-    passport.authenticate("google", { session: false, failureRedirect: "/" }),
-    async (req, res) => {
-        req.session.userId = req.user._id;
+    router.get("/auth/google/callback",
+        passport.authenticate("google", { session: false, failureRedirect: "/" }),
+        async (req, res) => {
+            req.session.userId = req.user._id;
 
-        // Process pending invitation if exists
-        if (req.session.pendingInvitation) {
-            try {
-                const invitation = await Invitation.findById(req.session.pendingInvitation);
-                if (invitation && invitation.status === "pending") {
-                    await processInvitation(invitation, req.user._id);
+            // Process pending invitation if exists
+            if (req.session.pendingInvitation) {
+                try {
+                    const invitation = await Invitation.findById(req.session.pendingInvitation);
+                    if (invitation && invitation.status === "pending") {
+                        await processInvitation(invitation, req.user._id);
+                    }
+                } catch (err) {
+                    console.error("Error processing invitation:", err);
                 }
-            } catch (err) {
-                console.error("Error processing invitation:", err);
+                delete req.session.pendingInvitation;
             }
-            delete req.session.pendingInvitation;
-        }
 
-        res.redirect("/");
-    }
-);
+            res.redirect("/");
+        }
+    );
+} else {
+    // Placeholder routes that inform the user Google Auth is disabled
+    router.get("/auth/google", (req, res) => res.status(503).send("Google Login is not configured."));
+    router.get("/auth/google/callback", (req, res) => res.redirect("/"));
+}
 
 module.exports = router;
 
