@@ -35,93 +35,93 @@
     <!-- SIDEBAR -->
     <div class="sidebar" id="sidebar">
       <div class="sidebar-header">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <!-- Mobile Close / Desktop Toggle (optional, but requested hamburger) -->
-          <!-- Actually user wants hamburger to retact sidebar. -->
-          <div>Chats</div>
-        </div>
-        <div style="display: flex; gap: 8px;">
-          <button class="new-chat-btn" onclick="showSettingsModal()"
-            style="background: transparent; color: var(--text-secondary); padding: 5px;">⚙️</button>
-          <button class="new-chat-btn" onclick="showNewChatModal()">+ New</button>
+        <!-- Sidebar Toggle (Hamburger) -->
+        <button class="sidebar-toggle-btn" onclick="app.toggleSidebar()"
+          style="background: transparent; border: none; font-size: 20px; color: var(--text-primary); cursor: pointer; margin-right: 8px;">☰</button>
+        <div>Chats</div>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button class="new-chat-btn" onclick="showSettingsModal()"
+          style="background: transparent; color: var(--text-secondary); padding: 5px;">⚙️</button>
+        <button class="new-chat-btn" onclick="showNewChatModal()">+ New</button>
+      </div>
+    </div>
+
+    <div class="tab-buttons">
+      <button class="tab-btn active" onclick="switchTab('channels')" id="btn-channels">
+        Channels
+      </button>
+      <button class="tab-btn" onclick="switchTab('dms')" id="btn-dms">DMs</button>
+      <button class="tab-btn" onclick="switchTab('rooms')" id="btn-rooms">Rooms</button>
+      <button class="tab-btn" onclick="switchTab('saved')" id="btn-saved">Saved</button>
+    </div>
+
+
+
+    <div class="search-bar">
+      <input type="text" placeholder="Search..." id="searchInput">
+    </div>
+
+    <div class="chat-list" id="chatList"></div>
+  </div>
+
+  <!-- CHAT AREA -->
+  <div class="chat-area" id="chatArea">
+    <div class="chat-header">
+      <div class="chat-header-left">
+        <!-- Back Button (Mobile Only) -->
+        <button class="back-btn" id="mobileBackBtn" onclick="app.showSidebar()"
+          style="display: none; background: transparent; border: none; font-size: 20px; color: var(--text-primary); margin-right: 10px; cursor: pointer;">←</button>
+
+        <!-- Hamburger Menu (Desktop Toggle) -->
+        <button class="sidebar-toggle-btn" id="desktopSidebarToggle" onclick="app.toggleSidebar()"
+          style="background: transparent; border: none; font-size: 20px; color: var(--text-primary); margin-right: 10px; cursor: pointer;">☰</button>
+
+        <div class="chat-avatar" id="currentChatAvatar">G</div>
+        <div>
+          <div id="currentChatName">Community Chat</div>
+          <div class="status" id="currentChatStatus">online</div>
         </div>
       </div>
-
-      <div class="tab-buttons">
-        <button class="tab-btn active" onclick="switchTab('channels')" id="btn-channels">
-          Channels
+      <div class="chat-header-right">
+        <button class="header-btn" id="inviteBtn" style="display: none;" onclick="showRoomInviteModal()"
+          title="Invite to Room">
+          <span>➕ Invite</span>
         </button>
-        <button class="tab-btn" onclick="switchTab('dms')" id="btn-dms">DMs</button>
-        <button class="tab-btn" onclick="switchTab('rooms')" id="btn-rooms">Rooms</button>
-        <button class="tab-btn" onclick="switchTab('saved')" id="btn-saved">Saved</button>
-      </div>
-
-
-
-      <div class="search-bar">
-        <input type="text" placeholder="Search..." id="searchInput">
-      </div>
-
-      <div class="chat-list" id="chatList"></div>
-    </div>
-
-    <!-- CHAT AREA -->
-    <div class="chat-area" id="chatArea">
-      <div class="chat-header">
-        <div class="chat-header-left">
-          <!-- Back Button (Mobile Only) -->
-          <button class="back-btn" id="mobileBackBtn" onclick="app.showSidebar()"
-            style="display: none; background: transparent; border: none; font-size: 20px; color: var(--text-primary); margin-right: 10px; cursor: pointer;">←</button>
-
-          <!-- Hamburger Menu (Desktop Toggle) -->
-          <button class="sidebar-toggle-btn" id="desktopSidebarToggle" onclick="app.toggleSidebar()"
-            style="background: transparent; border: none; font-size: 20px; color: var(--text-primary); margin-right: 10px; cursor: pointer;">☰</button>
-
-          <div class="chat-avatar" id="currentChatAvatar">G</div>
-          <div>
-            <div id="currentChatName">Community Chat</div>
-            <div class="status" id="currentChatStatus">online</div>
-          </div>
-        </div>
-        <div class="chat-header-right">
-          <button class="header-btn" id="inviteBtn" style="display: none;" onclick="showRoomInviteModal()"
-            title="Invite to Room">
-            <span>➕ Invite</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="chat-messages" id="messages"></div>
-      <div class="typing" id="typing"></div>
-
-      <!-- Reply Preview -->
-      <div class="reply-preview" id="replyPreview">
-        <div class="reply-content">
-          <div class="reply-to-label" id="replyToLabel">Reply to User</div>
-          <div class="reply-text" id="replyText">Message text...</div>
-        </div>
-        <button class="reply-close" onclick="replyManager.cancelReply()">&times;</button>
-      </div>
-
-      <!-- Voice Recording UI -->
-      <div class="voice-recording-ui" id="voiceRecordingUI">
-        <div class="recording-indicator"></div>
-        <div class="live-waveform" id="liveWaveform"></div>
-        <div class="recording-timer" id="recordingTimer">0:00</div>
-        <button class="cancel-recording-btn" onclick="voiceManager.cancelRecording()">Cancel</button>
-      </div>
-
-      <div class="chat-input">
-        <div class="emoji-picker" id="emojiPicker"></div>
-        <input id="messageInput" placeholder="Type a message">
-        <input type="file" id="fileInput" hidden>
-        <button class="emoji-btn" onclick="emojiManager.togglePicker()">😊</button>
-        <button class="file-btn" onclick="fileInput.click()">📎</button>
-        <button class="mic-btn" id="micBtn" onmousedown="voiceManager.startRecording()"
-          onmouseup="voiceManager.stopRecording()">🎤</button>
-        <button class="send-btn" onclick="app.sendMessage()">➤</button>
       </div>
     </div>
+
+    <div class="chat-messages" id="messages"></div>
+    <div class="typing" id="typing"></div>
+
+    <!-- Reply Preview -->
+    <div class="reply-preview" id="replyPreview">
+      <div class="reply-content">
+        <div class="reply-to-label" id="replyToLabel">Reply to User</div>
+        <div class="reply-text" id="replyText">Message text...</div>
+      </div>
+      <button class="reply-close" onclick="replyManager.cancelReply()">&times;</button>
+    </div>
+
+    <!-- Voice Recording UI -->
+    <div class="voice-recording-ui" id="voiceRecordingUI">
+      <div class="recording-indicator"></div>
+      <div class="live-waveform" id="liveWaveform"></div>
+      <div class="recording-timer" id="recordingTimer">0:00</div>
+      <button class="cancel-recording-btn" onclick="voiceManager.cancelRecording()">Cancel</button>
+    </div>
+
+    <div class="chat-input">
+      <div class="emoji-picker" id="emojiPicker"></div>
+      <input id="messageInput" placeholder="Type a message">
+      <input type="file" id="fileInput" hidden>
+      <button class="emoji-btn" onclick="emojiManager.togglePicker()">😊</button>
+      <button class="file-btn" onclick="fileInput.click()">📎</button>
+      <button class="mic-btn" id="micBtn" onmousedown="voiceManager.startRecording()"
+        onmouseup="voiceManager.stopRecording()">🎤</button>
+      <button class="send-btn" onclick="app.sendMessage()">➤</button>
+    </div>
+  </div>
   </div>
 
   <!-- ================= MODAL ================= -->
