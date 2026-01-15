@@ -1,0 +1,232 @@
+/* ===== TELEGRAM-STYLE REPLY ===== */
+.reply-preview {
+    background: var(--bg-message-in);
+    padding: 10px 16px;
+    margin: 0 16px 8px;
+    border-left: 3px solid var(--telegram-blue);
+    border-radius: 8px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.reply-preview.show {
+    display: flex;
+}
+
+.reply-content {
+    flex: 1;
+}
+
+.reply-to-label {
+    font-size: 12px;
+    color: var(--telegram-blue);
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.reply-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.reply-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 20px;
+    padding: 0 4px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.reply-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.message-reply {
+    background: rgba(0, 136, 204, 0.15);
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    border-left: 3px solid var(--telegram-blue);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.message-reply:hover {
+    background: rgba(0, 136, 204, 0.25);
+}
+
+.message-reply-label {
+    font-size: 12px;
+    color: var(--telegram-blue-light);
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.message-reply-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ===== EDIT STYLES ===== */
+.edited-label {
+    font-size: 10px;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-left: 4px;
+}
+
+.edit-input {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--bg-darker);
+    border: 2px solid var(--telegram-blue);
+    border-radius: 8px;
+    color: white;
+    font-size: 14.5px;
+    font-family: inherit;
+    outline: none;
+    line-height: 1.5;
+}
+
+.edit-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    justify-content: flex-end;
+}
+
+.edit-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.edit-save {
+    background: var(--telegram-blue);
+    color: white;
+}
+
+.edit-save:hover {
+    background: var(--telegram-blue-light);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 136, 204, 0.3);
+}
+
+.edit-cancel {
+    background: var(--bg-message-in);
+    color: var(--text-primary);
+}
+
+.edit-cancel:hover {
+    background: var(--border-color);
+}
+
+/* ===== DELETE STYLES ===== */
+.deleted-message {
+    opacity: 0.6;
+    font-style: italic;
+    color: var(--text-secondary);
+}
+
+/* ===== FORWARD STYLES ===== */
+.forwarded-label {
+    font-size: 11px;
+    color: var(--telegram-blue-light);
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.forwarded-label::before {
+    content: '↗';
+    font-size: 14px;
+}
+
+/* ===== MESSAGE ACTIONS ===== */
+.message-actions {
+    position: absolute;
+    top: -32px;
+    right: 0;
+    background: var(--bg-chat);
+    border-radius: 10px;
+    padding: 4px;
+    display: none;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    gap: 2px;
+    animation: popIn 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px) scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.message:hover .message-actions {
+    display: flex;
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 6px 10px;
+    font-size: 18px;
+    transition: all 0.2s;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-btn:hover {
+    background: rgba(0, 136, 204, 0.2);
+    color: var(--telegram-blue-light);
+    transform: scale(1.1);
+}
+
+.action-btn:active {
+    transform: scale(0.95);
+}

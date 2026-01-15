@@ -1,0 +1,93 @@
+
+const express = require("express");
+const crypto = require("crypto");
+const User = require("../models/User");
+const MagicToken = require("../models/MagicToken");
+const Invitation = require("../models/Invitation");
+const mailer = require("../utils/mailer");
+const { processInvitation } = require("../utils/helpers");
+const passport = require("../config/passport");
+
+
+const router = express.Router();
+const APP_URL = process.env.APP_URL || `http://localhost:${process.env.PORT || 3000}`;
+
+/* ---------- MAGIC LINK ---------- */
+router.post("/auth/magic-link", async (req, res) => {
+
+    try {
+        const token = crypto.randomBytes(32).toString("hex");
+        await MagicToken.create({ email: req.body.email, token });
+        await mailer.sendMail({
+            to: req.body.email,
+            subject: "Login",
+            html: `<a href="${APP_URL}/auth/magic/${token}">Login</a>`
+        });
+        res.json({ success: true });
+    } catch (error) {
+        console.error("Magic link error:", error);
+        res.status(500).json({ error: "Failed to send magic link" });
+    }
+});
+
+/* ---------- VERIFY ---------- */
+router.get("/auth/magic/:token", async (req, res) => {
+
+    try {
+        const record = await MagicToken.findOne({ token: req.params.token });
+
+        if (!record) {
+            return res.status(400).send("Invalid or expired token");
+        }
+
+        const user = await User.findOneAndUpdate(
+            { email: record.email },
+            { email: record.email, name: record.email.split("@")[0], lastSeen: null },
+            { upsert: true, new: true }
+        );
+        req.session.userId = user._id;
+        await MagicToken.deleteOne({ _id: record._id });
+
+        // Process pending invitation if exists
+        if (req.session.pendingInvitation) {
+            const invitation = await Invitation.findById(req.session.pendingInvitation);
+            if (invitation && invitation.status === "pending") {
+                await processInvitation(invitation, user._id);
+            }
+            delete req.session.pendingInvitation;
+        }
+
+        res.redirect("/");
+    } catch (error) {
+        console.error("Magic link verify error:", error);
+        res.status(500).send("Login failed");
+    }
+});
+
+/* ---------- GOOGLE AUTH ---------- */
+router.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+
+router.get("/auth/google/callback",
+    passport.authenticate("google", { session: false, failureRedirect: "/" }),
+    async (req, res) => {
+        req.session.userId = req.user._id;
+
+        // Process pending invitation if exists
+        if (req.session.pendingInvitation) {
+            try {
+                const invitation = await Invitation.findById(req.session.pendingInvitation);
+                if (invitation && invitation.status === "pending") {
+                    await processInvitation(invitation, req.user._id);
+                }
+            } catch (err) {
+                console.error("Error processing invitation:", err);
+            }
+            delete req.session.pendingInvitation;
+        }
+
+        res.redirect("/");
+    }
+);
+
+module.exports = router;
+

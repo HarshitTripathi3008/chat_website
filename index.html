@@ -1,364 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Socket.IO Chat App</title>
-  <style>
-    /* All your styles remain unchanged */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .chat-container {
-      background: white;
-      border-radius: 20px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-      width: 90%;
-      max-width: 500px;
-      height: 80vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-    .chat-header {
-      background: linear-gradient(45deg, #667eea, #764ba2);
-      color: white;
-      padding: 20px;
-      text-align: center;
-      font-size: 24px;
-      font-weight: bold;
-    }
-    .user-setup {
-      padding: 20px;
-      text-align: center;
-    }
-    .user-setup input {
-      width: 100%;
-      padding: 15px;
-      border: 2px solid #ddd;
-      border-radius: 10px;
-      font-size: 16px;
-      margin-bottom: 15px;
-      outline: none;
-      transition: border-color 0.3s;
-    }
-    .user-setup input:focus {
-      border-color: #667eea;
-    }
-    .user-setup button {
-      background: linear-gradient(45deg, #667eea, #764ba2);
-      color: white;
-      border: none;
-      padding: 15px 30px;
-      border-radius: 10px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    .user-setup button:hover {
-      transform: translateY(-2px);
-    }
-    .chat-main {
-      flex: 1;
-      display: none;
-      flex-direction: column;
-      min-height: 0;
-    }
-    .messages-container {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-      background: #f8f9fa;
-      scroll-behavior: smooth;
-      min-height: 0;
-    }
-    .message {
-      margin-bottom: 15px;
-      padding: 12px 16px;
-      border-radius: 18px;
-      max-width: 80%;
-      word-wrap: break-word;
-      animation: fadeIn 0.3s ease-in;
-    }
-    .message.own {
-      background: linear-gradient(45deg, #667eea, #764ba2);
-      color: white;
-      margin-left: auto;
-      text-align: right;
-    }
-    .message.other {
-      background: white;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    .message-sender {
-      font-weight: bold;
-      font-size: 12px;
-      opacity: 0.8;
-      margin-bottom: 5px;
-    }
-    .message-text {
-      font-size: 14px;
-      line-height: 1.4;
-    }
-    .message-time {
-      font-size: 11px;
-      opacity: 0.6;
-      margin-top: 5px;
-    }
-    .typing-indicator {
-      padding: 10px 20px;
-      font-style: italic;
-      color: #666;
-      background: #e9ecef;
-      border-radius: 15px;
-      margin: 0 20px 10px;
-      display: none;
-    }
-    .input-container {
-      padding: 20px;
-      background: white;
-      border-top: 1px solid #eee;
-      display: flex;
-      gap: 10px;
-    }
-    .input-container input {
-      flex: 1;
-      padding: 15px;
-      border: 2px solid #ddd;
-      border-radius: 25px;
-      font-size: 16px;
-      outline: none;
-      transition: border-color 0.3s;
-    }
-    .input-container input:focus {
-      border-color: #667eea;
-    }
-    .input-container button {
-      background: linear-gradient(45deg, #667eea, #764ba2);
-      color: white;
-      border: none;
-      padding: 15px 25px;
-      border-radius: 25px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: transform 0.2s;
-    }
-    .input-container button:hover {
-      transform: scale(1.05);
-    }
-    .users-online {
-      padding: 10px 20px;
-      background: #e9ecef;
-      font-size: 12px;
-      color: #666;
-      text-align: center;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .connection-status {
-      padding: 5px 20px;
-      text-align: center;
-      font-size: 12px;
-      background: #d4edda;
-      color: #155724;
-    }
-    .connection-status.disconnected {
-      background: #f8d7da;
-      color: #721c24;
-    }
-    @media (max-width: 600px) {
-      .chat-container {
-        width: 100%;
-        height: 100vh;
-        border-radius: 0;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="chat-container">
-    <div class="chat-header">💬 Socket.IO Chat</div>
-    <div class="connection-status" id="connectionStatus">Connecting...</div>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat App - Modular</title>
 
-    <div class="user-setup" id="userSetup">
-      <h3 style="margin-bottom: 20px; color: #333;">Enter your name to join the chat</h3>
-      <input type="text" id="usernameInput" placeholder="Your name..." maxlength="20">
-      <button onclick="joinChat()">Join Chat</button>
+  <!-- Modular CSS -->
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/reply.css">
+  <link rel="stylesheet" href="/css/emoji.css">
+  <link rel="stylesheet" href="/css/voice.css">
+  <link rel="stylesheet" href="/css/voice.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/toast.css">
+
+</head>
+
+<body>
+  <!-- ================= LOGIN ================= -->
+  <div class="login" id="login">
+    <div class="login-box">
+      <h2>Chat App</h2>
+      <input type="email" id="emailInput" placeholder="Enter your email">
+      <button onclick="sendMagicLink()">Send Magic Link</button>
+      <div class="divider">OR</div>
+      <a href="/auth/google" class="google-btn">Login with Google</a>
     </div>
 
-    <div class="chat-main" id="chatMain">
-      <div class="users-online" id="usersOnline">Users online: 0</div>
-      <div class="messages-container" id="messagesContainer"></div>
-      <div class="typing-indicator" id="typingIndicator">Someone is typing...</div>
-      <div class="input-container">
-        <input type="text" id="messageInput" placeholder="Type your message..." maxlength="500">
-        <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <!-- ================= MAIN APP ================= -->
+  <div class="app" id="app" style="display:none">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <div>Chats</div>
+        <div style="display: flex; gap: 8px;">
+          <button class="new-chat-btn" onclick="showSettingsModal()"
+            style="background: transparent; color: var(--text-secondary); padding: 5px;">⚙️</button>
+          <button class="new-chat-btn" onclick="showNewChatModal()">+ New</button>
+        </div>
+      </div>
+
+      <div class="tab-buttons">
+        <button class="tab-btn active" onclick="switchTab('channels')" id="btn-channels">
+          Channels
+        </button>
+        <button class="tab-btn" onclick="switchTab('dms')" id="btn-dms">DMs</button>
+        <button class="tab-btn" onclick="switchTab('rooms')" id="btn-rooms">Rooms</button>
+        <button class="tab-btn" onclick="switchTab('saved')" id="btn-saved">Saved</button>
+      </div>
+
+
+
+      <div class="search-bar">
+        <input type="text" placeholder="Search..." id="searchInput">
+      </div>
+
+      <div class="chat-list" id="chatList"></div>
+    </div>
+
+    <!-- CHAT AREA -->
+    <div class="chat-area">
+      <div class="chat-header">
+        <div class="chat-header-left">
+          <div class="chat-avatar" id="currentChatAvatar">G</div>
+          <div>
+            <div id="currentChatName">Community Chat</div>
+            <div class="status" id="currentChatStatus">online</div>
+          </div>
+        </div>
+        <div class="chat-header-right">
+          <button class="header-btn" id="inviteBtn" style="display: none;" onclick="showRoomInviteModal()"
+            title="Invite to Room">
+            <span>➕ Invite</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="chat-messages" id="messages"></div>
+      <div class="typing" id="typing"></div>
+
+      <!-- Reply Preview -->
+      <div class="reply-preview" id="replyPreview">
+        <div class="reply-content">
+          <div class="reply-to-label" id="replyToLabel">Reply to User</div>
+          <div class="reply-text" id="replyText">Message text...</div>
+        </div>
+        <button class="reply-close" onclick="replyManager.cancelReply()">&times;</button>
+      </div>
+
+      <!-- Voice Recording UI -->
+      <div class="voice-recording-ui" id="voiceRecordingUI">
+        <div class="recording-indicator"></div>
+        <div class="live-waveform" id="liveWaveform"></div>
+        <div class="recording-timer" id="recordingTimer">0:00</div>
+        <button class="cancel-recording-btn" onclick="voiceManager.cancelRecording()">Cancel</button>
+      </div>
+
+      <div class="chat-input">
+        <div class="emoji-picker" id="emojiPicker"></div>
+        <input id="messageInput" placeholder="Type a message">
+        <input type="file" id="fileInput" hidden>
+        <button class="emoji-btn" onclick="emojiManager.togglePicker()">😊</button>
+        <button class="file-btn" onclick="fileInput.click()">📎</button>
+        <button class="mic-btn" id="micBtn" onmousedown="voiceManager.startRecording()"
+          onmouseup="voiceManager.stopRecording()">🎤</button>
+        <button class="send-btn" onclick="app.sendMessage()">➤</button>
       </div>
     </div>
   </div>
 
+  <!-- ================= MODAL ================= -->
+  <div class="modal" id="newChatModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" id="modalTitle">New Direct Message</div>
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+      </div>
+      <div id="modalBody">
+        <!-- Dynamic content loaded by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Socket.IO -->
   <script src="/socket.io/socket.io.js"></script>
+
+  <!-- Modular JavaScript -->
+  <script type="module" src="/js/reply.js"></script>
+  <script type="module" src="/js/editDelete.js"></script>
+  <script type="module" src="/js/emoji.js"></script>
+  <script type="module" src="/js/voice.js"></script>
+  <script type="module" src="/js/voice.js"></script>
+  <script type="module" src="/js/toast.js"></script>
+  <script type="module" src="/js/app.js"></script>
+
+
+  <!-- Helper functions for onclick handlers -->
   <script>
-    let socket;
-    let username = '';
-    let isTyping = false;
-    let typingTimer;
-
-    function initSocket() {
-      socket = io();
-
-      socket.on('connect', () => updateConnectionStatus(true));
-      socket.on('disconnect', () => updateConnectionStatus(false));
-
-      socket.on('message', displayMessage);
-      socket.on('userJoined', (data) => {
-        displaySystemMessage(`${data.username} joined the chat`);
-        updateUsersCount(data.usersCount);
-      });
-      socket.on('userLeft', (data) => {
-        displaySystemMessage(`${data.username} left the chat`);
-        updateUsersCount(data.usersCount);
-      });
-      socket.on('usersCount', updateUsersCount);
-      socket.on('userTyping', (data) => {
-        if (data.username !== username) showTypingIndicator(`${data.username} is typing...`);
-      });
-      socket.on('userStoppedTyping', (data) => {
-        if (data.username !== username) hideTypingIndicator();
-      });
-      socket.on('serverShutdown', () => {
-        displaySystemMessage("⚠️ Server is shutting down...");
-      });
-    }
-
-    function updateConnectionStatus(connected) {
-      const statusEl = document.getElementById('connectionStatus');
-      statusEl.textContent = connected ? `Connected: ${socket.id}` : 'Disconnected - Reconnecting...';
-      statusEl.className = connected ? 'connection-status' : 'connection-status disconnected';
-    }
-
-    function joinChat() {
-      const usernameInput = document.getElementById('usernameInput');
-      const enteredUsername = usernameInput.value.trim();
-      if (enteredUsername.length < 2) return alert('Enter at least 2 characters');
-
-      username = enteredUsername;
-      socket.emit('join', { username });
-      document.getElementById('userSetup').style.display = 'none';
-      document.getElementById('chatMain').style.display = 'flex';
-      document.getElementById('messageInput').focus();
-    }
-
-    function sendMessage() {
-      const messageInput = document.getElementById('messageInput');
-      const message = messageInput.value.trim();
-      if (!message) return;
-
-      socket.emit('message', { text: message });
-      messageInput.value = '';
-      stopTyping();
-    }
-
-    function displayMessage(data) {
-      const messagesContainer = document.getElementById('messagesContainer');
-      const isOwn = data.username === username;
-      const time = new Date(data.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-      const messageEl = document.createElement('div');
-      messageEl.className = `message ${isOwn ? 'own' : 'other'}`;
-      messageEl.innerHTML = `
-        ${!isOwn ? `<div class="message-sender">${data.username}</div>` : ''}
-        <div class="message-text">${escapeHtml(data.text)}</div>
-        <div class="message-time">${time}</div>
-      `;
-
-      messagesContainer.appendChild(messageEl);
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-
-    function displaySystemMessage(text) {
-      const container = document.getElementById('messagesContainer');
-      const el = document.createElement('div');
-      el.style.cssText = `
-        text-align: center;
-        color: #666;
-        font-style: italic;
-        margin: 10px 0;
-        padding: 8px;
-        background: #f0f0f0;
-        border-radius: 15px;
-        font-size: 12px;
-      `;
-      el.textContent = text;
-      container.appendChild(el);
-      container.scrollTop = container.scrollHeight;
-    }
-
-    function updateUsersCount(count) {
-      document.getElementById('usersOnline').textContent = `Users online: ${count}`;
-    }
-
-    function showTypingIndicator(text) {
-      const el = document.getElementById('typingIndicator');
-      el.textContent = text;
-      el.style.display = 'block';
-    }
-
-    function hideTypingIndicator() {
-      document.getElementById('typingIndicator').style.display = 'none';
-    }
-
-    function startTyping() {
-      if (!isTyping) {
-        isTyping = true;
-        socket.emit('typing'); // ✅ FIXED: no payload
-      }
-      clearTimeout(typingTimer);
-      typingTimer = setTimeout(stopTyping, 1000);
-    }
-
-    function stopTyping() {
-      if (isTyping) {
-        isTyping = false;
-        socket.emit('stopTyping'); // ✅ FIXED: no payload
+    function switchTab(tab) {
+      if (window.app) {
+        window.app.switchTab(tab);
       }
     }
 
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
+    function showNewChatModal() {
+      if (window.app) {
+        window.app.showNewChatModal();
+      }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      initSocket();
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach(m => m.classList.remove('show'));
+    }
 
-      document.getElementById('usernameInput').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') joinChat();
-      });
+    function showRoomInviteModal() {
+      if (window.app) {
+        window.app.showRoomInviteModal();
+      }
+    }
 
-      const msgInput = document.getElementById('messageInput');
-      msgInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendMessage();
-        else startTyping();
-      });
+    function joinRoom(token) {
+      window.location.href = `/rooms/join/${token}`;
+    }
 
-      msgInput.addEventListener('input', () => {
-        msgInput.value.trim() ? startTyping() : stopTyping();
-      });
-    });
+    function showSettingsModal() {
+      if (window.app) window.app.showSettingsModal();
+    }
+
+    function saveProfile() {
+      if (window.app) window.app.saveProfile();
+    }
   </script>
+
+  <!-- Room Invite Modal -->
+  <div class="modal" id="roomInviteModal">
+    <div class="modal-content">
+      <h2>Invite to Room</h2>
+      <div id="roomInviteContent"></div>
+      <div class="modal-actions">
+        <button onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal" id="settingsModal">
+    <div class="modal-content">
+      <h2>Profile Settings</h2>
+      <div id="settingsBody" style="display: flex; flex-direction: column; gap: 15px;">
+        <!-- Avatar Preview -->
+        <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+          <div id="settingsAvatarPreview"
+            style="width: 80px; height: 80px; border-radius: 50%; background: var(--telegram-blue); color: white; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; overflow: hidden;">
+            <!-- Img or Initial will be set by JS -->
+          </div>
+        </div>
+
+        <div>
+          <label style="display: block; margin-bottom: 5px; color: var(--text-secondary); font-size: 13px;">Display
+            Name</label>
+          <input type="text" id="settingsName" placeholder="Your Name"
+            style="width: 100%; padding: 10px; background: var(--bg-darker); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-primary);">
+        </div>
+
+        <div>
+          <label
+            style="display: block; margin-bottom: 5px; color: var(--text-secondary); font-size: 13px;">Avatar</label>
+          <input type="file" id="settingsAvatar" accept="image/*"
+            style="width: 100%; padding: 10px; background: var(--bg-darker); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-primary);">
+        </div>
+
+        <div id="settingsStatus" style="font-size: 13px; min-height: 20px;"></div>
+      </div>
+      <div class="modal-actions">
+        <button onclick="closeModal()"
+          style="background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color);">Cancel</button>
+        <button onclick="saveProfile()" style="background: var(--telegram-blue); color: white;">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
 </body>
+
 </html>

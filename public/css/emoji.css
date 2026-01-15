@@ -1,0 +1,188 @@
+/* ===== TELEGRAM-STYLE EMOJI PICKER ===== */
+.emoji-picker {
+    position: absolute;
+    bottom: 70px;
+    left: 16px;
+    background: var(--bg-chat);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    display: none;
+    width: 340px;
+    max-height: 320px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    animation: emojiPickerSlideUp 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes emojiPickerSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.emoji-picker.show {
+    display: block;
+}
+
+.emoji-picker::-webkit-scrollbar {
+    width: 6px;
+}
+
+.emoji-picker::-webkit-scrollbar-track {
+    background: var(--bg-darker);
+    border-radius: 3px;
+}
+
+.emoji-picker::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+.emoji-picker::-webkit-scrollbar-thumb:hover {
+    background: #2a3942;
+}
+
+.emoji-category {
+    margin-bottom: 16px;
+}
+
+.emoji-category-title {
+    color: var(--telegram-blue-light);
+    font-size: 11px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.emoji-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 4px;
+}
+
+.emoji-item {
+    font-size: 26px;
+    cursor: pointer;
+    padding: 6px;
+    text-align: center;
+    border-radius: 6px;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.emoji-item:hover {
+    background: rgba(0, 136, 204, 0.2);
+    transform: scale(1.2);
+}
+
+.emoji-item:active {
+    transform: scale(1.1);
+}
+
+/* ===== TELEGRAM-STYLE REACTIONS ===== */
+.message-reactions {
+    display: flex;
+    gap: 4px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+}
+
+.reaction {
+    background: rgba(0, 136, 204, 0.15);
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+.reaction:hover {
+    background: rgba(0, 136, 204, 0.25);
+    transform: scale(1.05);
+}
+
+.reaction.my-reaction {
+    background: rgba(0, 136, 204, 0.3);
+    border-color: var(--telegram-blue);
+}
+
+.reaction-emoji {
+    font-size: 15px;
+}
+
+.reaction-count {
+    font-size: 11px;
+    color: var(--telegram-blue-light);
+    font-weight: 600;
+}
+
+.reaction-picker {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 0;
+    background: var(--bg-chat);
+    border-radius: 24px;
+    padding: 8px 12px;
+    display: none;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border-color);
+    animation: reactionPickerPop 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    z-index: 10;
+}
+
+@keyframes reactionPickerPop {
+    0% {
+        opacity: 0;
+        transform: scale(0.5) translateY(10px);
+    }
+
+    50% {
+        transform: scale(1.05) translateY(0);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.reaction-picker.show {
+    display: flex;
+    gap: 6px;
+}
+
+.reaction-option {
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 4px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+}
+
+.reaction-option:hover {
+    background: rgba(0, 136, 204, 0.2);
+    transform: scale(1.3);
+}
+
+.reaction-option:active {
+    transform: scale(1.1);
+}
