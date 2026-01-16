@@ -4,9 +4,13 @@
     align-items: center;
     gap: 8px;
     padding: 12px 16px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    /* Safe area for new iPhones */
     background: var(--bg-chat);
     position: relative;
     border-top: 1px solid var(--border-color);
+    flex-shrink: 0;
+    /* Prevent shrinking */
 }
 
 .chat-input input {
