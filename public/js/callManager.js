@@ -8,6 +8,7 @@ class CallManager {
         this.remoteAudio.autoplay = true;
 
         this.activeCall = null; // { userId, socketId, isIncoming }
+        this.isMuted = false;
 
         this.config = {
             iceServers: [
@@ -72,6 +73,7 @@ class CallManager {
                 await this.peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
                 this.dom.status.textContent = "Connected";
                 document.querySelector('.call-avatar').classList.remove('pulse');
+                this.showActiveCallUI(); // Ensure UI updates to connected state
             }
         });
 
@@ -101,6 +103,9 @@ class CallManager {
 
         // Render Buttons
         this.dom.actions.innerHTML = `
+            <button class="call-btn mute ${this.isMuted ? 'active' : ''}" onclick="callManager.toggleMute(this)">
+                🎤
+            </button>
             <button class="call-btn reject" onclick="callManager.rejectCall()">
                 ❌
             </button>
@@ -120,6 +125,9 @@ class CallManager {
         this.modal.classList.add('show');
 
         this.dom.actions.innerHTML = `
+            <button class="call-btn mute ${this.isMuted ? 'active' : ''}" onclick="callManager.toggleMute(this)">
+                🎤
+            </button>
             <button class="call-btn reject" onclick="callManager.endCall(true)">
                 ❌
             </button>
@@ -130,7 +138,7 @@ class CallManager {
         this.dom.status.textContent = "Connected";
         document.querySelector('.call-avatar').classList.remove('pulse');
         this.dom.actions.innerHTML = `
-            <button class="call-btn mute" onclick="callManager.toggleMute(this)">
+            <button class="call-btn mute ${this.isMuted ? 'active' : ''}" onclick="callManager.toggleMute(this)">
                 🎤
             </button>
             <button class="call-btn reject" onclick="callManager.endCall(true)">
@@ -148,8 +156,21 @@ class CallManager {
         await this.setupPeerConnection();
 
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+            const stream = await navigator.mediaDevices.getUserMedia({
+                audio: {
+                    echoCancellation: true,
+                    noiseSuppression: true,
+                    autoGainControl: true
+                },
+                video: false
+            });
             this.localStream = stream;
+
+            // Apply mute state immediately if set
+            if (this.isMuted) {
+                this.localStream.getAudioTracks()[0].enabled = false;
+            }
+
             stream.getTracks().forEach(track => {
                 this.peerConnection.addTrack(track, stream);
             });
@@ -174,8 +195,21 @@ class CallManager {
         await this.setupPeerConnection();
 
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+            const stream = await navigator.mediaDevices.getUserMedia({
+                audio: {
+                    echoCancellation: true,
+                    noiseSuppression: true,
+                    autoGainControl: true
+                },
+                video: false
+            });
             this.localStream = stream;
+
+            // Apply mute state immediately if set
+            if (this.isMuted) {
+                this.localStream.getAudioTracks()[0].enabled = false;
+            }
+
             stream.getTracks().forEach(track => {
                 this.peerConnection.addTrack(track, stream);
             });
@@ -235,13 +269,24 @@ class CallManager {
 
         this.activeCall = null;
         this.modal.classList.remove('show');
+
+        // Reset mute state for next call? Or keep it? keeping it is fine but reset is safer
+        this.isMuted = false;
     }
 
     toggleMute(btn) {
+        this.isMuted = !this.isMuted;
+
         if (this.localStream) {
             const track = this.localStream.getAudioTracks()[0];
-            track.enabled = !track.enabled;
-            btn.classList.toggle('active', !track.enabled);
+            track.enabled = !this.isMuted;
+        }
+
+        if (btn) {
+            // If btn passed, toggle class. 
+            // Better to query all mute buttons just in case to sync UI
+            const muteBtns = document.querySelectorAll('.call-btn.mute');
+            muteBtns.forEach(b => b.classList.toggle('active', this.isMuted));
         }
     }
 }
