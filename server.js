@@ -25,6 +25,7 @@ const socketHandler = require("./socket/socketHandler");
 
 
 const app = express();
+app.set('trust proxy', 1); // Fix for Render/Heroku proxy rate limiting
 
 const server = http.createServer(app);
 const io = new Server(server);

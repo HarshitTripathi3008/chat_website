@@ -6,7 +6,7 @@ const Conversation = require("../models/Conversation");
 const User = require("../models/User");
 const RoomInvite = require("../models/RoomInvite");
 const Invitation = require("../models/Invitation");
-const mailer = require("../utils/mailer");
+const { sendEmail } = require("../utils/sendgrid");
 const { requireAuth } = require("../middleware/authMiddleware");
 const { inviteLimiter } = require("../middleware/rateLimiter");
 const { processInvitation } = require("../utils/helpers");
@@ -322,7 +322,7 @@ router.post("/invitations/send", requireAuth, inviteLimiter, async (req, res) =>
     });
 
     // Send invitation email
-    await mailer.sendMail({
+    await sendEmail({
         to: toEmail,
         subject: `${fromUser.name} invited you to chat`,
         html: `

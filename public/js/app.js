@@ -581,6 +581,9 @@ class ChatApp {
 
         // Load messages for this conversation
         await this.loadConversationMessages(conversationId);
+
+        // Auto hide sidebar on mobile after selection
+        this.hideSidebarMobile();
     }
 
 
