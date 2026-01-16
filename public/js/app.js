@@ -286,9 +286,17 @@ class ChatApp {
       `;
 
         } else if (data.type === 'file') {
+            // Fix: Cloudinary sometimes returns image URL for raw files if uploaded incorrectly.
+            // valid raw URL should be /raw/upload, but might be /image/upload in DB.
+            // enhanced check: if it looks like a doc but has image url, swap it.
+            let fileUrl = data.file.url;
+            if (fileUrl.includes('/image/upload/') && fileUrl.match(/\.(pdf|doc|docx|zip|rar|txt)$/i)) {
+                fileUrl = fileUrl.replace('/image/upload/', '/raw/upload/');
+            }
+
             content += `
         ${!isMine ? `<b>${data.username}</b><br>` : ""}
-        <a href="${data.file.url}" download="${data.file.name}" class="file-attachment">📎 ${data.file.name}</a>
+        <a href="${fileUrl}" download="${data.file.name}" target="_blank" class="file-attachment">📎 ${data.file.name}</a>
       `;
         } else if (data.type === 'room_invite') {
             // Special rendering for room invites
