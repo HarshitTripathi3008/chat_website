@@ -13,7 +13,7 @@ class ChatApp {
         this.conversations = [];
         this.channels = [];
         this.onlineUsers = [];
-        this.currentTab = 'channels';
+        this.currentTab = 'dms';
         this.isMobile = window.innerWidth <= 900;
 
         // Handle resize
@@ -111,8 +111,8 @@ class ChatApp {
     }
 
     loadInitialData() {
+        this.loadConversations(); // Load DMs first
         this.loadChannels();
-        this.loadConversations();
         this.loadOnlineUsers();
         // this.loadHistory(); // Removed global chat history
     }
@@ -129,7 +129,9 @@ class ChatApp {
     }
 
     renderChannels() {
-        const html = this.channels.map(ch => `
+        const html = this.channels.map(ch => {
+            const isSubscribed = ch.participants && ch.participants.some(p => String(p) === String(this.me._id));
+            return `
             <div class="chat-item" onclick="app.selectConversation('${ch._id}', 'channel', this)">
                 <div class="chat-avatar" style="background: linear-gradient(135deg, #FF9966, #FF5E62)">#</div>
                 <div class="chat-info">
@@ -137,11 +139,19 @@ class ChatApp {
                         ${ch.name}
                         ${ch.isNSFW ? '<span style="font-size: 10px; background: #ff4444; padding: 2px 4px; border-radius: 4px; margin-left: 5px;">18+</span>' : ''}
                     </div>
-                    <div class="chat-last">${ch.description || 'Meme Channel'}</div>
+                     <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="chat-last">${ch.description || 'Meme Channel'}</div>
+                        ${!isSubscribed ? `<button class="list-subscribe-btn" onclick="app.quickSubscribe('${ch._id}', event)">Subscribe</button>` : ''}
+                    </div>
                 </div>
             </div>
-        `).join('');
+        `}).join('');
         document.getElementById('chatList').innerHTML = html;
+    }
+
+    async quickSubscribe(channelId, event) {
+        event.stopPropagation(); // Prevent opening the channel view "locked" state
+        await this.toggleSubscription(channelId, false); // false = was not subscribed, so join
     }
 
 
@@ -543,12 +553,34 @@ class ChatApp {
         }
 
 
+        // Highlight selected conversation
+        const chatItem = clickedElement ? clickedElement.closest('.chat-item') : null;
+        if (chatItem) {
+            document.querySelectorAll('.chat-item').forEach(el => el.classList.remove('active'));
+            chatItem.classList.add('active');
+        }
+
+        // Access Control for Channels
+        if (type === 'channel') {
+            const isSubscribed = conv.participants.some(p => String(p) === String(this.me._id));
+            if (!isSubscribed) {
+                // Not subscribed: Show "Locked" view
+                const messagesEl = document.getElementById('messages');
+                messagesEl.innerHTML = `
+                    <div class="locked-channel-view">
+                        <div style="font-size: 48px; margin-bottom: 20px;">🔒</div>
+                        <h3>Subscribers Only</h3>
+                        <p>Subscribe to <b>${conv.name}</b> to view memes and messages.</p>
+                    </div>
+                `;
+                // Hide input
+                document.querySelector('.chat-input').style.display = 'none';
+                return; // Stop here, don't load messages
+            }
+        }
+
         // Load messages for this conversation
         await this.loadConversationMessages(conversationId);
-
-        // Highlight selected conversation
-        const chatItem = clickedElement.closest('.chat-item');
-        if (chatItem) chatItem.classList.add('active');
     }
 
 
