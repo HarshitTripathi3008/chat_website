@@ -363,8 +363,25 @@ class ChatApp {
         window.editDeleteManager.deleteMessage(messageId, true);
     }
 
-    updateConversationPreview(message) {
-        const conv = this.conversations.find(c => c._id === message.conversationId);
+    async updateConversationPreview(message) {
+        let conv = this.conversations.find(c => c._id === message.conversationId);
+
+        // If conversation doesn't exist locally (New DM/Room started by someone else)
+        if (!conv) {
+            try {
+                const res = await fetch(`/conversations/${message.conversationId}`);
+                if (res.ok) {
+                    conv = await res.json();
+                    this.conversations.push(conv);
+                    // Add to specific type list
+                    if (conv.type === 'direct') this.dmConversations.push(conv);
+                    else if (conv.type === 'group') this.roomConversations.push(conv);
+                }
+            } catch (err) {
+                console.error("Error fetching new conversation:", err);
+            }
+        }
+
         if (conv) {
             conv.lastMessage = {
                 text: message.text || 'Media',
@@ -374,11 +391,13 @@ class ChatApp {
             conv.updatedAt = new Date();
 
             // Re-sort conversations by most recent
+            this.dmConversations.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+            this.roomConversations.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
+            // Re-render current tab
             if (this.currentTab === 'dms') {
-                this.dmConversations.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
                 this.renderConversations(this.dmConversations);
             } else if (this.currentTab === 'rooms') {
-                this.roomConversations.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
                 this.renderConversations(this.roomConversations);
             }
         }
@@ -397,6 +416,9 @@ class ChatApp {
             const res = await fetch("/conversations");
             if (!res.ok) throw new Error('Failed to load conversations');
             this.conversations = await res.json();
+
+            // Sort by updatedAt desc
+            this.conversations.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
             // Separate by type
             this.dmConversations = this.conversations.filter(c => c.type === 'direct');
