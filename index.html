@@ -194,6 +194,41 @@
     function saveProfile() {
       if (window.app) window.app.saveProfile();
     }
+
+    async function sendMagicLink() {
+      const email = document.getElementById("emailInput").value.trim();
+      if (!email) {
+        alert("Please enter your email");
+        return;
+      }
+
+      const btn = document.querySelector('button[onclick="sendMagicLink()"]');
+      const originalText = btn.innerText;
+      btn.innerText = "Sending...";
+      btn.disabled = true;
+
+      try {
+        const res = await fetch("/auth/magic-link", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          alert("Magic link sent! Check your email (or server logs if testing locally).");
+        } else {
+          alert("Error: " + (data.error || "Failed to send link"));
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Request failed. Please try again.");
+      } finally {
+        btn.innerText = originalText;
+        btn.disabled = false;
+      }
+    }
   </script>
 
   <!-- Room Invite Modal -->
