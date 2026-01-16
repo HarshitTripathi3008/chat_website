@@ -22,8 +22,7 @@ const storage = new CloudinaryStorage({
             return {
                 folder: 'chat_app_uploads',
                 resource_type: 'raw',
-                // Keep extension for raw files so URL ends in .pdf/.doc etc
-                public_id: file.originalname.replace(/\.[^/.]+$/, "") + "_" + Date.now() + (file.originalname.match(/\.[^/.]+$/)?.[0] || "")
+                public_id: file.originalname.replace(/\.[^/.]+$/, "") + "_" + Date.now() // Unique name
             };
         }
 
