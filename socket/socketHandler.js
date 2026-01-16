@@ -6,6 +6,7 @@ const Message = require("../models/Message");
 const Conversation = require("../models/Conversation");
 
 const typingTimeouts = new Map();
+const connectedUsers = new Map(); // userId -> socketId
 
 module.exports = (io, useRedis, pub, sub) => {
     /* ================= SOCKET.IO ================= */
@@ -25,6 +26,9 @@ module.exports = (io, useRedis, pub, sub) => {
         const user = await User.findById(socket.handshake.session.userId);
         if (!user) return;
 
+        // Map userId to socketId for direct calling
+        connectedUsers.set(user._id.toString(), socket.id);
+
         // Join socket rooms for all user's conversations
         const userConversations = await Conversation.find({
             participants: user._id
@@ -39,6 +43,51 @@ module.exports = (io, useRedis, pub, sub) => {
         // Broadcast online users
         const onlineUsers = await User.find({ lastSeen: null });
         io.emit("onlineUsers", onlineUsers);
+
+        /* ================= CALLING EVENTS ================= */
+        socket.on("call-user", ({ toUserId, offer }) => {
+            const targetSocketId = connectedUsers.get(toUserId);
+            if (targetSocketId) {
+                io.to(targetSocketId).emit("call-made", {
+                    offer,
+                    socket: socket.id,
+                    callerId: user._id,
+                    callerName: user.name,
+                    callerAvatar: user.avatar
+                });
+            }
+        });
+
+        socket.on("make-answer", ({ toUserId, answer }) => {
+            const targetSocketId = connectedUsers.get(toUserId);
+            if (targetSocketId) {
+                io.to(targetSocketId).emit("answer-made", {
+                    socket: socket.id,
+                    answer
+                });
+            }
+        });
+
+        socket.on("ice-candidate", ({ toUserId, candidate }) => {
+            const targetSocketId = connectedUsers.get(toUserId);
+            if (targetSocketId) {
+                io.to(targetSocketId).emit("ice-candidate", {
+                    candidate,
+                    from: user._id
+                });
+            }
+        });
+
+        socket.on("hang-up", ({ toUserId }) => {
+            // If toUserId is provided, tell them specifically
+            if (toUserId) {
+                const targetSocketId = connectedUsers.get(toUserId);
+                if (targetSocketId) {
+                    io.to(targetSocketId).emit("call-ended", { from: user._id });
+                }
+            }
+        });
+
 
         socket.on("message", async ({ text, conversationId, replyTo }) => {
             const msgData = {
@@ -194,6 +243,8 @@ module.exports = (io, useRedis, pub, sub) => {
         });
 
         socket.on("disconnect", async () => {
+            connectedUsers.delete(user._id.toString()); // Remove from map
+
             // Clear all typing timeouts for this user
             for (const [key, timeout] of typingTimeouts.entries()) {
                 if (key.startsWith(user._id.toString())) {

@@ -108,6 +108,7 @@ class ChatApp {
     initManagers() {
         window.emojiManager.initPicker();
         window.editDeleteManager = new EditDeleteManager(this.socket);
+        window.callManager = new CallManager(this.socket, this.me);
     }
 
     loadInitialData() {
@@ -505,6 +506,18 @@ class ChatApp {
         const headerRight = document.querySelector('.chat-header-right');
         // Clear previous buttons
         headerRight.innerHTML = '';
+
+        if (type === 'direct') {
+            const callBtn = document.createElement('button');
+            callBtn.className = 'header-btn';
+            callBtn.innerHTML = '📞';
+            callBtn.title = 'Audio Call';
+            callBtn.onclick = () => {
+                const otherUser = conv.participants.find(p => p._id !== this.me._id);
+                if (otherUser) window.callManager.startCall(otherUser._id, otherUser);
+            };
+            headerRight.appendChild(callBtn);
+        }
 
         if (type === 'channel') {
             // Fix: Ensure we compare strings
