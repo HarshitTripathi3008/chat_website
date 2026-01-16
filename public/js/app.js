@@ -280,7 +280,7 @@ class ChatApp {
         } else if (data.type === 'image') {
             content += `
         ${!isMine ? `<b>${data.username}</b><br>` : ""}
-        <img src="${data.file.url}" alt="Image" style="max-width: 300px; border-radius: 8px; cursor: pointer;" onclick="window.open('${data.file.url}', '_blank')">
+        <img src="${data.file.url}" alt="Image" style="max-width: 300px; border-radius: 8px; cursor: pointer;" onclick="window.open('${data.file.url}', '_blank')" onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend', '<div class=\'broken-img\' style=\'padding:10px; background:#333; border-radius:8px; color:#fff;\'>⚠️ Image not found</div>');">
         <button class="save-meme-btn" onclick="app.saveMeme('${data._id}')" title="Save to Collection">💾</button>
       `;
 

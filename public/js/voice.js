@@ -312,7 +312,8 @@ export class VoiceManager {
     }
 
     renderVoiceMessage(data) {
-        const waveformBars = data.file.waveform.map((amplitude, index) => {
+        const waveform = data.file.waveform || [];
+        const waveformBars = waveform.map((amplitude, index) => {
             const height = Math.max(4, (amplitude / 255) * 24);
             return `<div class="voice-waveform-bar" style="height: ${height}px"></div>`;
         }).join('');

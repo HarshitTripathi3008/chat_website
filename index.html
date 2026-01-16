@@ -5,6 +5,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chat App - Modular</title>
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💬</text></svg>">
 
   <!-- Modular CSS -->
   <link rel="stylesheet" href="/css/base.css">
@@ -42,9 +44,9 @@
           <div style="font-weight: bold;">Chats</div>
         </div>
         <div style="display: flex; gap: 8px; align-items: center;">
-             <!-- Saved Items Icon -->
+          <!-- Saved Items Icon -->
           <button class="new-chat-btn" onclick="switchTab('saved')" title="Saved Items"
-          style="background: transparent; color: var(--text-secondary); padding: 5px; font-size: 18px;">💾</button>
+            style="background: transparent; color: var(--text-secondary); padding: 5px; font-size: 18px;">💾</button>
           <button class="new-chat-btn" onclick="showSettingsModal()"
             style="background: transparent; color: var(--text-secondary); padding: 5px;">⚙️</button>
           <button class="new-chat-btn" onclick="showNewChatModal()">+ New</button>
@@ -56,8 +58,8 @@
         <button class="tab-btn active" onclick="switchTab('dms')" id="btn-dms">DMs</button>
         <button class="tab-btn" onclick="switchTab('rooms')" id="btn-rooms">Rooms</button>
         <button class="tab-btn" onclick="switchTab('channels')" id="btn-channels">
-            Channels
-          </button>
+          Channels
+        </button>
       </div>
 
 
@@ -76,12 +78,14 @@
           <!-- Back Button (Mobile Only) -->
           <button class="back-btn" id="mobileBackBtn" onclick="app.showSidebar()"
             style="display: none; background: transparent; border: none; font-size: 20px; color: var(--text-primary); margin-right: 10px; cursor: pointer;">←</button>
-          
-           <!-- Desktop Open Sidebar Button (Visible only when sidebar is closed) -->
-           <button class="sidebar-open-btn" id="desktopSidebarToggle" onclick="app.toggleSidebar()"
-           style="display: none; background: transparent; border: none; font-size: 20px; color: var(--text-primary); margin-right: 15px; cursor: pointer;">☰</button>
 
-          <div class="chat-avatar" id="currentChatAvatar" style="background: transparent; display: flex; align-items: center; justify-content: center; font-size: 24px;">💬</div>
+          <!-- Desktop Open Sidebar Button (Visible only when sidebar is closed) -->
+          <button class="sidebar-open-btn" id="desktopSidebarToggle" onclick="app.toggleSidebar()"
+            style="display: none; background: transparent; border: none; font-size: 20px; color: var(--text-primary); margin-right: 15px; cursor: pointer;">☰</button>
+
+          <div class="chat-avatar" id="currentChatAvatar"
+            style="background: transparent; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+            💬</div>
           <div>
             <div id="currentChatName">Select a Chat</div>
             <div class="status" id="currentChatStatus"></div>
