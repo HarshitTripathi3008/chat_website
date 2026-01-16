@@ -10,10 +10,22 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
-    params: {
-        folder: 'chat_app_uploads',
-        allowed_formats: ['jpg', 'png', 'jpeg', 'gif', 'mp3', 'wav', 'ogg', 'webm', 'mp4', 'pdf', 'doc', 'docx', 'txt', 'zip', 'mov', 'avi', 'mkv'],
-        resource_type: 'auto'
+    params: async (req, file) => {
+        const isRaw = file.mimetype.match(/application\/(pdf|msword|vnd.*|zip)|text\/plain/);
+
+        if (isRaw) {
+            return {
+                folder: 'chat_app_uploads',
+                resource_type: 'raw',
+                public_id: file.originalname.replace(/\.[^/.]+$/, "") + "_" + Date.now() // Unique name
+            };
+        }
+
+        return {
+            folder: 'chat_app_uploads',
+            allowed_formats: ['jpg', 'png', 'jpeg', 'gif', 'mp3', 'wav', 'ogg', 'webm', 'mp4', 'mov', 'avi', 'mkv'],
+            resource_type: 'auto'
+        };
     }
 });
 
