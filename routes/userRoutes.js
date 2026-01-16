@@ -17,7 +17,7 @@ router.post("/me/update", requireAuth, upload.single("avatar"), async (req, res)
         const { name } = req.body;
         const updateData = {};
         if (name) updateData.name = name;
-        if (req.file) updateData.avatar = `/uploads/${req.file.filename}`;
+        if (req.file) updateData.avatar = req.file.path;
 
         const user = await User.findByIdAndUpdate(req.session.userId, updateData, { new: true });
         res.json(user);

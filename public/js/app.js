@@ -377,7 +377,7 @@ class ChatApp {
 
     getAvatar(name, avatarUrl = null) {
         if (avatarUrl) {
-            return `<img src="${avatarUrl}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+            return `<img src="${avatarUrl}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" onerror="this.onerror=null;this.parentElement.innerText='${(name || '?').charAt(0).toUpperCase()}';">`;
         }
         if (!name) return '?';
         return name.charAt(0).toUpperCase();
@@ -755,6 +755,34 @@ class ChatApp {
                 reader.readAsDataURL(file);
             }
         };
+
+        // Add Logout Button (if not already present or just simple re-render)
+        const settingsStatus = document.getElementById('settingsStatus');
+        // Clear previous buttons if any appended manually
+        const existingLogout = document.getElementById('settingsLogoutBtn');
+        if (existingLogout) existingLogout.remove();
+
+        const logoutBtn = document.createElement('button');
+        logoutBtn.id = 'settingsLogoutBtn';
+        logoutBtn.className = 'btn secondary';
+        logoutBtn.style.marginTop = '15px';
+        logoutBtn.style.width = '100%';
+        logoutBtn.style.color = '#ff4444';
+        logoutBtn.style.borderColor = '#ff4444';
+        logoutBtn.textContent = 'Log Out';
+        logoutBtn.onclick = () => window.location.href = '/auth/logout';
+
+        // Append after the save button if possible, or to the modal content end.
+        // The modal HTML structure in index.html is likely static. 
+        // Let's append it to the settings status container for now, or the form container.
+        // Actually, let's just insert it after the Save button.
+        const saveBtn = document.querySelector('#settingsModal .btn.primary');
+        if (saveBtn && saveBtn.parentNode) {
+            saveBtn.parentNode.insertBefore(logoutBtn, saveBtn.nextSibling);
+        } else {
+            // Fallback
+            settingsStatus.appendChild(logoutBtn);
+        }
 
         modal.classList.add('show');
     }

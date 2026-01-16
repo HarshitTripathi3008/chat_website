@@ -110,5 +110,14 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
     router.get("/auth/google/callback", (req, res) => res.redirect("/"));
 }
 
+/* ---------- LOGOUT ---------- */
+router.get("/auth/logout", (req, res) => {
+    req.session.destroy((err) => {
+        if (err) console.error("Error destroying session:", err);
+        res.clearCookie("connect.sid");
+        res.redirect("/");
+    });
+});
+
 module.exports = router;
 
