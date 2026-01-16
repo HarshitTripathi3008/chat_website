@@ -1227,12 +1227,26 @@ window.sendMagicLink = async function () {
     if (!email) return Toast.show("Enter email", 'warning');
 
 
-    await fetch("/auth/magic-link", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email })
-    });
-    Toast.show("Check your email for login link", 'success');
+    try {
+        const res = await fetch("/auth/magic-link", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+
+        if (data.message) {
+            // Backend might send success=true but with a warning message (e.g. email failed)
+            Toast.show(data.message, data.success ? 'warning' : 'error');
+        } else if (data.success) {
+            Toast.show("Check your email for login link", 'success');
+        } else {
+            Toast.show(data.error || "Failed to send link", 'error');
+        }
+    } catch (e) {
+        console.error(e);
+        Toast.show("Network error sending link", 'error');
+    }
 };
 
 
