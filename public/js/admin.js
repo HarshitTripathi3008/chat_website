@@ -51,6 +51,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize
     loadStats();
     loadUsers();
+
+    // Cleanup Button
+    document.getElementById('cleanupBtn').onclick = async () => {
+        if (!confirm("Remove broken avatars from DB?")) return;
+        try {
+            const res = await fetch('/api/admin/cleanup-avatars', { method: 'POST' });
+            const data = await res.json();
+            Toast.show(`Cleaned ${data.modified} users`);
+            loadUsers(currentPage); // Refresh list
+        } catch (e) {
+            Toast.show("Cleanup failed", 'error');
+        }
+    };
 });
 
 async function loadStats() {

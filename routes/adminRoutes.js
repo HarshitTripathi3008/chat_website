@@ -58,19 +58,37 @@ router.get('/users', async (req, res) => {
     }
 });
 
-// Ban User (Example implementation - toggling a 'banned' field, assumes User model has it or we just add it)
+// Ban User
 router.post('/users/:id/ban', async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
         if (!user) return res.status(404).json({ error: "User not found" });
 
-        // Simple toggle for now. In real app, ensure 'isBanned' exists in Schema
         user.isBanned = !user.isBanned;
         await user.save();
 
         res.json({ success: true, isBanned: user.isBanned });
     } catch (err) {
         res.status(500).json({ error: "Failed to update user" });
+    }
+});
+
+// Cleanup Broken Avatars (Quick Fix)
+router.post('/cleanup-avatars', async (req, res) => {
+    try {
+        // Unset avatars that match the specific missing file or are generally broken patterns if known.
+        // For now, specifically targeting the reported missing file pattern or all non-dicebear/google avatars if requested.
+        // User asked to "remove these". We'll remove specific broken ones.
+
+        const result = await User.updateMany(
+            { avatar: { $regex: '1768501889513.jpg' } },
+            { $unset: { avatar: "" } }
+        );
+
+        res.json({ success: true, modified: result.modifiedCount });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Cleanup failed" });
     }
 });
 
