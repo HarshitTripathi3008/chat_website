@@ -42,7 +42,8 @@ const SOURCES = {
     political: [
         'IndianDankMemes',
         'IndianPoliticalMemes',
-        'librandu'
+        'librandu',
+        'india'
     ],
 
     instagram: [
