@@ -64,9 +64,7 @@ const SOURCES = {
         'cryptomemes',
         'wallstreetbets'
     ],
-    india: [
-        'india'
-    ],
+    
 
     anime: [
         'AnimeIndia',
@@ -135,7 +133,7 @@ class MemeBot {
             { name: "Crypto & Stonks", category: 'crypto', description: "To the moon! 🚀" },
             { name: "Anime Weebs", category: 'anime', description: "I noticed you notice me senpai" },
             { name: "Sports Central", category: 'sports', description: "Cricket, Football & More" },
-            { name: "INDIA", category: 'india', description: "INFORMATION" }
+            
 
         ];
 
