@@ -40,9 +40,6 @@ const SOURCES = {
 
 
     political: [
-        'IndianDankMemes',
-        'IndianPoliticalMemes',
-        'librandu',
         'india'
     ],
 
