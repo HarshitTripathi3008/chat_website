@@ -113,6 +113,9 @@ class CallManager {
 
             document.onmousemove = elementDrag;
             document.ontouchmove = elementDrag;
+
+            // Disable transition during drag for smoothness
+            element.style.transition = 'none';
         }
 
         function elementDrag(e) {
@@ -290,9 +293,14 @@ class CallManager {
         this.isMinimized = !this.isMinimized;
         if (this.isMinimized) {
             this.modal.classList.add('minimized');
-            // Change button icon?
         } else {
             this.modal.classList.remove('minimized');
+            // Reset position styles for full screen
+            this.modal.style.top = '';
+            this.modal.style.left = '';
+            this.modal.style.bottom = '';
+            this.modal.style.right = '';
+            this.modal.style.transition = ''; // Restore transition
         }
     }
 
