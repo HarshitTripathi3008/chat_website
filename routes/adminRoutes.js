@@ -3,6 +3,8 @@ const User = require('../models/User');
 const Message = require('../models/Message');
 const Conversation = require('../models/Conversation');
 const { requireAdmin } = require('../middleware/adminMiddleware');
+const fs = require('fs');
+const path = require('path');
 
 const router = express.Router();
 
