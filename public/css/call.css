@@ -55,7 +55,46 @@
 .call-modal.minimized .call-status,
 .call-modal.minimized .call-top-controls {
     display: none;
-    /* Hide controls to save space, click to expand to use them */
+}
+
+/* Maximize Button - Only visible in minimized mode */
+.call-modal.minimized .maximize-btn {
+    display: flex;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 30px;
+    height: 30px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    font-size: 14px;
+    color: white;
+}
+
+.maximize-btn {
+    display: none;
+    /* Hidden by default */
+}
+
+.call-modal.minimized .call-card {
+    pointer-events: auto;
+    width: 100%;
+    height: 100%;
+    /* Stronger shadow and border for visibility */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    padding: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    cursor: grab;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    /* Clearer border */
+    background: #000;
+    /* Ensure background is dark if no video */
 }
 
 /* Show avatar if no video */

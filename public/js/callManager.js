@@ -35,6 +35,11 @@ class CallManager {
             modal.innerHTML = `
                 <div class="call-card" id="callCard">
                     
+                    <!-- Maximize Button (Hidden unless minimized) -->
+                    <div class="maximize-btn" onclick="callManager.toggleMinimize()">
+                        ↖
+                    </div>
+
                     <div class="call-top-controls">
                         <button class="control-btn" title="Minimize" onclick="callManager.toggleMinimize()">
                             ↘
@@ -83,30 +88,51 @@ class CallManager {
         let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
         const card = element.querySelector('.call-card');
 
+        // Mouse events
         card.onmousedown = dragMouseDown;
+        // Touch events
+        card.ontouchstart = dragMouseDown;
 
         function dragMouseDown(e) {
             // Only allow dragging if minimized
             if (!element.classList.contains('minimized')) return;
 
-            e = e || window.event;
-            e.preventDefault();
-            // get the mouse cursor position at startup:
-            pos3 = e.clientX;
-            pos4 = e.clientY;
+            // If touch event
+            if (e.type === 'touchstart') {
+                pos3 = e.touches[0].clientX;
+                pos4 = e.touches[0].clientY;
+            } else {
+                e = e || window.event;
+                e.preventDefault();
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+            }
+
             document.onmouseup = closeDragElement;
-            // call a function whenever the cursor moves:
+            document.ontouchend = closeDragElement;
+
             document.onmousemove = elementDrag;
+            document.ontouchmove = elementDrag;
         }
 
         function elementDrag(e) {
-            e = e || window.event;
-            e.preventDefault();
+            let clientX, clientY;
+
+            if (e.type === 'touchmove') {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                e = e || window.event;
+                e.preventDefault();
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+
             // calculate the new cursor position:
-            pos1 = pos3 - e.clientX;
-            pos2 = pos4 - e.clientY;
-            pos3 = e.clientX;
-            pos4 = e.clientY;
+            pos1 = pos3 - clientX;
+            pos2 = pos4 - clientY;
+            pos3 = clientX;
+            pos4 = clientY;
 
             // set the element's new position:
             // The modal wrapper is fixed 100% w/h, but in minimized mode acts differently.
@@ -126,6 +152,8 @@ class CallManager {
             // stop moving when mouse button is released:
             document.onmouseup = null;
             document.onmousemove = null;
+            document.ontouchend = null;
+            document.ontouchmove = null;
         }
     }
 
