@@ -109,10 +109,30 @@ button:active,
 .chat-list {
   flex: 1;
   overflow-y: auto;
+  padding-bottom: 20px;
+  /* Prevent bottom congestion */
 }
 
-.chat-list::-webkit-scrollbar {
-  width: 6px;
+/* ... existing scrollbar styles ... */
+
+.chat-header-info {
+  cursor: pointer;
+  transition: opacity 0.2s;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+.chat-header-info:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.chat-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+width: 6px;
 }
 
 .chat-list::-webkit-scrollbar-track {

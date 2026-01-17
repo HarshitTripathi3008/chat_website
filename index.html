@@ -87,7 +87,7 @@
           <div class="chat-avatar" id="currentChatAvatar"
             style="background: transparent; display: flex; align-items: center; justify-content: center; font-size: 24px;">
             💬</div>
-          <div>
+          <div id="currentChatInfoWrapper">
             <div id="currentChatName">Select a Chat</div>
             <div class="status" id="currentChatStatus"></div>
           </div>
@@ -290,7 +290,45 @@
 
       </div>
     </div>
-  </div>
+    <!-- User Profile Modal (Read Only) -->
+    <div class="modal" id="userProfileModal">
+      <div class="modal-content" style="max-width: 350px;">
+        <div style="display: flex; justify-content: flex-end;">
+          <button class="close-btn" onclick="closeModal()">&times;</button>
+        </div>
+
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 15px; padding-bottom: 20px;">
+          <!-- Avatar -->
+          <div id="userProfileAvatar"
+            style="width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: bold; overflow: hidden; border: 3px solid var(--bg-secondary); box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+          </div>
+
+          <!-- Name & Status -->
+          <div style="text-align: center;">
+            <h2 id="userProfileName" style="margin: 0; font-size: 22px; color: var(--text-primary);"></h2>
+            <div id="userProfileStatus" style="color: var(--telegram-blue-light); font-size: 14px; margin-top: 4px;">
+            </div>
+          </div>
+
+          <!-- Bio -->
+          <div style="width: 100%; background: var(--bg-darker); padding: 15px; border-radius: 12px; margin-top: 10px;">
+            <div
+              style="color: var(--text-secondary); font-size: 12px; font-weight: 600; margin-bottom: 5px; text-transform: uppercase;">
+              BIO</div>
+            <div id="userProfileBio" style="color: var(--text-primary); font-size: 14px; line-height: 1.5;"></div>
+          </div>
+
+          <!-- Email (Optional/Hidden if not shared) -->
+          <div style="width: 100%;" id="userProfileEmailContainer">
+            <div
+              style="color: var(--text-secondary); font-size: 12px; font-weight: 600; margin-bottom: 5px; text-transform: uppercase;">
+              EMAIL</div>
+            <div id="userProfileEmail" style="color: var(--text-primary); font-size: 14px;"></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
 
 </body>
 

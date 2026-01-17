@@ -1373,10 +1373,55 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div class="chat-info">
                         <div class="chat-name">${u.name}</div>
-                        <div style="font-size: 11px; color: var(--text-secondary);">${u.email}</div>
-                    </div>
-                </div>
-            `).join('');
+                        <div style="font-size: 11px; color: var(--text-secondary);">${u.email    showUserProfile(user) {
+                if(!user) return; // Should not happen for DMs but safe check
+
+                const modal = document.getElementById('userProfileModal');
+                const nameEl = document.getElementById('userProfileName');
+                const statusEl = document.getElementById('userProfileStatus');
+                const bioEl = document.getElementById('userProfileBio');
+                const avatarEl = document.getElementById('userProfileAvatar');
+                const emailEl = document.getElementById('userProfileEmail');
+
+                nameEl.textContent = user.name;
+
+                // Status with color
+                const isOnline = this.onlineUsers.some(u => u._id === user._id);
+                if(isOnline) {
+                    statusEl.innerHTML = '<span style="color: var(--accent-green);">Online</span>';
+                } else {
+                    statusEl.textContent = user.lastSeen ? `Last seen ${new Date(user.lastSeen).toLocaleDateString()}` : 'Offline';
+                    statusEl.style.color = 'var(--telegram-blue-light)';
+                }
+
+        // Bio
+        bioEl.textContent = user.bio || "No bio available.";
+
+                // Email (Only if available in participant object - usually simplified)
+                if(user.email) {
+                    emailEl.textContent = user.email;
+            document.getElementById('userProfileEmailContainer').style.display = 'block';
+        } else {
+            document.getElementById('userProfileEmailContainer').style.display = 'none';
+        }
+
+        // Avatar
+        avatarEl.innerHTML = this.getAvatar(user.name, user.avatar);
+        // Fix size inside modal if using img
+        const img = avatarEl.querySelector('img');
+        if (img) {
+            img.style.width = '100%';
+            img.style.height = '100%';
+        } else {
+            avatarEl.style.fontSize = '40px'; // For initials
+        }
+
+        modal.classList.add('show');
+    }
+}</div >
+                    </div >
+                </div >
+    `).join('');
 
             document.getElementById('chatList').innerHTML = html ||
                 '<div style="padding: 20px; text-align: center; color: var(--text-secondary);">No users found</div>';
