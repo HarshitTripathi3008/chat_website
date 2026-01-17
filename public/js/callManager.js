@@ -97,6 +97,11 @@ class CallManager {
             // Only allow dragging if minimized
             if (!element.classList.contains('minimized')) return;
 
+            // Allow buttons to be clicked (don't start drag)
+            if (e.target.closest('button') || e.target.closest('.maximize-btn') || e.target.closest('.call-actions')) {
+                return;
+            }
+
             // If touch event
             if (e.type === 'touchstart') {
                 pos3 = e.touches[0].clientX;
