@@ -21,6 +21,7 @@ const chatRoutes = require("./routes/chatRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
 
 const channelRoutes = require("./routes/channelRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 const socketHandler = require("./socket/socketHandler");
 
 

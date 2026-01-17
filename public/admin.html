@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Chat App</title>
+    <!-- Use existing styles + new admin styles -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Preahvihear&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-tab="overview">
+                    <span>📊</span> Overview
+                </a>
+                <a href="#" class="nav-item" data-tab="users">
+                    <span>👥</span> User Management
+                </a>
+                <a href="/" class="nav-item back-home">
+                    <span>⬅️</span> Back to App
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-bar">
+                <h1>Dashboard</h1>
+                <div class="user-info">
+                    <span id="adminName">Loading...</span>
+                </div>
+            </header>
+
+            <!-- Views -->
+            <div id="overview-view" class="view-section active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Users</h3>
+                        <div class="stat-value" id="statsUsers">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Messages</h3>
+                        <div class="stat-value" id="statsMsg">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Active Channels</h3>
+                        <div class="stat-value" id="statsChannels">0</div>
+                    </div>
+                </div>
+
+                <div class="recent-section">
+                    <h2>Recent Signups</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Joined</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentUsersTable">
+                            <!-- Injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="users-view" class="view-section">
+                <div class="section-header">
+                    <h2>All Users</h2>
+                    <div class="search-box">
+                        <input type="text" placeholder="Search users..." disabled>
+                    </div>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Avatar</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="allUsersTable">
+                        <!-- Injected via JS -->
+                    </tbody>
+                </table>
+                <div class="pagination">
+                    <button id="prevPage" disabled>Previous</button>
+                    <span id="pageInfo">Page 1</span>
+                    <button id="nextPage">Next</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script src="js/admin.js"></script>
+</body>
+
+</html>
