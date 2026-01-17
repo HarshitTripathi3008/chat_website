@@ -74,6 +74,59 @@ class CallManager {
         this.remoteVideo = document.getElementById('remoteVideo');
         this.localVideo = document.getElementById('localVideo');
         this.remoteVideo.srcObject = this.remoteStream;
+
+        // Initialize Drag Logic
+        this.makeDraggable(this.modal);
+    }
+
+    makeDraggable(element) {
+        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        const card = element.querySelector('.call-card');
+
+        card.onmousedown = dragMouseDown;
+
+        function dragMouseDown(e) {
+            // Only allow dragging if minimized
+            if (!element.classList.contains('minimized')) return;
+
+            e = e || window.event;
+            e.preventDefault();
+            // get the mouse cursor position at startup:
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            // call a function whenever the cursor moves:
+            document.onmousemove = elementDrag;
+        }
+
+        function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+            // calculate the new cursor position:
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+
+            // set the element's new position:
+            // The modal wrapper is fixed 100% w/h, but in minimized mode acts differently.
+            // Actually, we should move the CARD if it's minimized, but because the CSS structure is
+            // .call-modal.minimized (fixed bottom right) -> .call-card
+            // It is valid to move the modal wrapper if we change its styles, OR just move the card.
+            // Given the CSS structure: .call-modal.minimized is fixed position.
+            // We should modify the .call-modal.minimized 'top' and 'left' and unset bottom/right.
+
+            element.style.top = (element.offsetTop - pos2) + "px";
+            element.style.left = (element.offsetLeft - pos1) + "px";
+            element.style.bottom = 'auto';
+            element.style.right = 'auto';
+        }
+
+        function closeDragElement() {
+            // stop moving when mouse button is released:
+            document.onmouseup = null;
+            document.onmousemove = null;
+        }
     }
 
     initSocket() {
