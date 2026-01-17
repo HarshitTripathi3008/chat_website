@@ -60,6 +60,11 @@ router.get("/auth/magic/:token", async (req, res) => {
             { email: record.email, name: record.email.split("@")[0], lastSeen: null },
             { upsert: true, new: true }
         );
+
+        if (user.isBanned) {
+            return res.status(403).send("<h1>🚫 Access Denied</h1><p>Your account has been suspended.</p>");
+        }
+
         req.session.userId = user._id;
         await MagicToken.deleteOne({ _id: record._id });
 

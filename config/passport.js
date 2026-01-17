@@ -19,13 +19,17 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
                 let user = await User.findOne({ email });
 
                 if (user) {
+                    if (user.isBanned) {
+                        return done(null, false, { message: "Account Banned" });
+                    }
                     return done(null, user);
                 } else {
                     // Create new user
                     user = await User.create({
                         email,
                         name: name || email.split("@")[0],
-                        avatar: avatar
+                        avatar: avatar,
+                        isBanned: false
                     });
                     return done(null, user);
                 }
