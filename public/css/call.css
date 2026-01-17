@@ -5,18 +5,63 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0, 0, 0, 0.9);
     z-index: 2000;
     display: none;
     align-items: center;
     justify-content: center;
     backdrop-filter: blur(5px);
-    transition: opacity 0.3s;
+    transition: all 0.3s ease;
 }
 
 .call-modal.show {
     display: flex;
     animation: fadeIn 0.3s;
+}
+
+/* Minimized State (PIP) */
+.call-modal.minimized {
+    width: 300px;
+    height: 400px;
+    top: auto;
+    left: auto;
+    bottom: 20px;
+    right: 20px;
+    background: transparent;
+    backdrop-filter: none;
+    pointer-events: none;
+    /* Let clicks pass through outside the card */
+}
+
+.call-modal.minimized .call-card {
+    pointer-events: auto;
+    /* Re-enable clicks on the card */
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    padding: 0;
+    overflow: hidden;
+    border-radius: 15px;
+}
+
+.call-modal.minimized .call-actions {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+    transform: scale(0.8);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.call-modal.minimized .call-card:hover .call-actions {
+    opacity: 1;
+}
+
+.call-modal.minimized .call-avatar {
+    width: 80px;
+    height: 80px;
+    margin-top: 60px;
 }
 
 .call-card {
@@ -25,21 +70,89 @@
     border-radius: 20px;
     text-align: center;
     color: white;
-    width: 320px;
+    width: 350px;
+    /* Widened for buttons */
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     position: relative;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }
 
+/* Video Container */
+.video-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    display: none;
+    /* Hidden by default (audio call) */
+    background: #000;
+}
+
+.video-container.active {
+    display: block;
+}
+
+#remoteVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#localVideo {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 100px;
+    height: 140px;
+    background: #333;
+    border-radius: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    object-fit: cover;
+    z-index: 2;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+}
+
+/* Hide local video in audio mode or if camera off */
+#localVideo.hidden {
+    display: none;
+}
+
+/* Avatar - sits on top of video if no video stream, or standard view */
 .call-avatar {
     width: 100px;
     height: 100px;
     border-radius: 50%;
     background: #333;
-    margin: 0 auto 20px;
+    margin-bottom: 20px;
     overflow: hidden;
     border: 4px solid var(--telegram-blue);
     position: relative;
+    z-index: 1;
+    transition: all 0.3s;
+}
+
+/* Hide avatar when video is active */
+.video-active .call-avatar {
+    opacity: 0;
+    transform: scale(0.5);
+    position: absolute;
+    /* Take out of flow */
+}
+
+/* Hide status/name when video is active (optional, or overlay them) */
+.video-active .call-name,
+.video-active .call-status {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    position: relative;
+    z-index: 1;
 }
 
 .call-avatar img {
@@ -70,56 +183,82 @@
     font-size: 22px;
     font-weight: 600;
     margin-bottom: 5px;
+    z-index: 1;
 }
 
 .call-status {
     font-size: 14px;
     color: var(--text-secondary);
     margin-bottom: 30px;
+    z-index: 1;
 }
 
 .call-actions {
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 15px;
+    /* Reduced gap to fit more buttons */
+    z-index: 2;
+    /* Above video */
 }
 
 .call-btn {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    /* Slightly smaller */
+    height: 50px;
     border-radius: 50%;
     border: none;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
+    font-size: 20px;
     transition: transform 0.2s, background 0.2s;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    color: white;
 }
 
 .call-btn:hover {
     transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .call-btn.accept {
     background: #00cc66;
-    color: white;
     animation: bounce 1.2s infinite;
 }
 
 .call-btn.reject {
     background: #ff4444;
-    color: white;
 }
 
-.call-btn.mute {
-    background: #333;
-    color: white;
-}
-
-.call-btn.mute.active {
+.call-btn.active {
     background: white;
     color: #333;
+}
+
+/* Top Right Controls (Minimize) */
+.call-top-controls {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 10;
+    display: flex;
+    gap: 10px;
+}
+
+.control-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    font-size: 18px;
+    transition: color 0.2s;
+}
+
+.control-btn:hover {
+    color: white;
 }
 
 @keyframes bounce {
