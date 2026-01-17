@@ -116,6 +116,22 @@ class ChatApp {
         this.loadChannels();
         this.loadOnlineUsers();
         // this.loadHistory(); // Removed global chat history
+
+        // Admin Button Injection
+        if (this.me && this.me.email === 'harshtripathi9559@gmail.com') {
+            const header = document.querySelector('.sidebar-header');
+            if (header && !document.querySelector('.admin-btn')) {
+                const btn = document.createElement('a');
+                btn.className = 'admin-btn';
+                btn.href = '/admin.html';
+                btn.innerHTML = '⚙️ Admin';
+                btn.style.cssText = `
+                     background: #ff4444; color: white; padding: 5px 10px; 
+                     border-radius: 6px; text-decoration: none; font-size: 12px; margin-left: 10px; font-weight: bold;
+                 `;
+                header.appendChild(btn);
+            }
+        }
     }
 
     async loadChannels() {

@@ -110,6 +110,7 @@ let pub, sub;
   app.use("/", userRoutes);
   app.use("/", chatRoutes);
   app.use("/", channelRoutes);
+  app.use("/api/admin", adminRoutes); // Correctly mounted
 
   app.use("/", uploadRoutes); // Mounts to root but routes start with /upload
 
