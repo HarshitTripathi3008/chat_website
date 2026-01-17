@@ -10,7 +10,24 @@ const router = express.Router();
 /* ---------- GET CHANNELS ---------- */
 router.get("/channels", async (req, res) => {
     try {
-        const channels = await Conversation.find({ type: 'channel' })
+        let showNSFW = false;
+
+        // Check if user is logged in and is the admin
+        if (req.session && req.session.userId) {
+            const user = await User.findById(req.session.userId);
+            if (user && user.email === 'harshtripathi9559@gmail.com') {
+                showNSFW = true;
+            }
+        }
+
+        // Build Query
+        const query = { type: 'channel' };
+        if (!showNSFW) {
+            // Exclude NSFW channels for everyone else
+            query.isNSFW = { $ne: true };
+        }
+
+        const channels = await Conversation.find(query)
             .select('name description category isNSFW participants')
             .sort({ name: 1 });
 
