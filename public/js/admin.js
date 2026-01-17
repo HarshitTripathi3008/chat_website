@@ -112,6 +112,9 @@ async function loadUsers(page = 1) {
                 <td>${u.name}</td>
                 <td>${u.email}</td>
                 <td>
+                    ${u.lastSeen ? new Date(u.lastSeen).toLocaleString() : '<span style="opacity:0.5">Never</span>'}
+                </td>
+                <td>
                     <button class="btn-ban" onclick="toggleBan('${u._id}')">
                         ${u.isBanned ? 'Unban' : 'Ban'}
                     </button>
