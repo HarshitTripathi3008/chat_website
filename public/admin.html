@@ -61,44 +61,45 @@
 
                 <div class="recent-section">
                     <h2>Recent Signups</h2>
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Joined</th>
-                            </tr>
-                        </thead>
-                        <tbody id="recentUsersTable">
-                            <!-- Injected via JS -->
-                        </tbody>
-                    </table>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Joined</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentUsersTable">
+                                <!-- Injected via JS -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
             <div id="users-view" class="view-section">
                 <div class="section-header">
                     <h2>All Users</h2>
-                    <div class="search-box">
-                        <input type="text" placeholder="Search users..." disabled>
-                    </div>
                 </div>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Avatar</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="allUsersTable">
-                        <!-- Injected via JS -->
-                    </tbody>
-                </table>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Avatar</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allUsersTable">
+                            <!-- Injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
                 <div class="pagination">
                     <button id="prevPage" disabled>Previous</button>
-                    <span id="pageInfo">Page 1</span>
+                    <span id="pageInfoPage">1</span> <!-- Changed ID to avoid conflict -->
                     <button id="nextPage">Next</button>
                 </div>
             </div>
