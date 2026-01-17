@@ -159,9 +159,9 @@ class ChatApp {
         const bioEl = document.getElementById('userProfileBio');
         const avatarEl = document.getElementById('userProfileAvatar');
         const emailEl = document.getElementById('userProfileEmail');
-        
+
         nameEl.textContent = user.name;
-        
+
         // Status with color
         const isOnline = this.onlineUsers.some(u => u._id === user._id);
         if (isOnline) {
@@ -611,9 +611,19 @@ class ChatApp {
             callBtn.title = 'Audio Call';
             callBtn.onclick = () => {
                 const otherUser = conv.participants.find(p => p._id !== this.me._id);
-                if (otherUser) window.callManager.startCall(otherUser._id, otherUser);
+                if (otherUser) window.callManager.startCall(otherUser._id, otherUser, 'audio');
             };
             headerRight.appendChild(callBtn);
+
+            const videoBtn = document.createElement('button');
+            videoBtn.className = 'header-btn';
+            videoBtn.innerHTML = '📹';
+            videoBtn.title = 'Video Call';
+            videoBtn.onclick = () => {
+                const otherUser = conv.participants.find(p => p._id !== this.me._id);
+                if (otherUser) window.callManager.startCall(otherUser._id, otherUser, 'video');
+            };
+            headerRight.appendChild(videoBtn);
         }
 
         if (type === 'channel') {
