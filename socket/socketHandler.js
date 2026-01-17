@@ -48,7 +48,7 @@ module.exports = (io, useRedis, pub, sub) => {
         io.emit("onlineUsers", onlineUsers);
 
         /* ================= CALLING EVENTS ================= */
-        socket.on("call-user", ({ toUserId, offer }) => {
+        socket.on("call-user", ({ toUserId, offer, type }) => {
             const targetSocketId = connectedUsers.get(toUserId);
             if (targetSocketId) {
                 io.to(targetSocketId).emit("call-made", {
@@ -56,7 +56,8 @@ module.exports = (io, useRedis, pub, sub) => {
                     socket: socket.id,
                     callerId: user._id,
                     callerName: user.name,
-                    callerAvatar: user.avatar
+                    callerAvatar: user.avatar,
+                    type
                 });
             }
         });
