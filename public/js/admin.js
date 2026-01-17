@@ -92,7 +92,7 @@ async function loadUsers(page = 1) {
         table.innerHTML = data.users.map(u => `
             <tr>
                 <td>
-                    <img src="${u.avatar}" 
+                    <img src="${u.avatar || 'https://api.dicebear.com/7.x/initials/svg?seed=' + u.name}" 
                          style="width:36px; height:36px; border-radius:50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.1);"
                          onerror="this.src='https://api.dicebear.com/7.x/initials/svg?seed=${u.name}'">
                 </td>
@@ -107,7 +107,10 @@ async function loadUsers(page = 1) {
         `).join('');
 
         // Pagination UI
-        document.getElementById('pageInfo').innerText = `Page ${data.currentPage} of ${data.totalPages}`;
+        const pageInfoEl = document.getElementById('pageInfoPage');
+        if (pageInfoEl) {
+            pageInfoEl.innerText = `Page ${data.currentPage} of ${data.totalPages}`;
+        }
         document.getElementById('prevPage').disabled = data.currentPage <= 1;
         document.getElementById('nextPage').disabled = data.currentPage >= data.totalPages;
 
