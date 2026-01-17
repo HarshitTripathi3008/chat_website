@@ -91,7 +91,11 @@ async function loadUsers(page = 1) {
         const table = document.getElementById('allUsersTable');
         table.innerHTML = data.users.map(u => `
             <tr>
-                <td><img src="${u.avatar}" style="width:30px;height:30px;border-radius:50%"></td>
+                <td>
+                    <img src="${u.avatar}" 
+                         style="width:36px; height:36px; border-radius:50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.1);"
+                         onerror="this.src='https://api.dicebear.com/7.x/initials/svg?seed=${u.name}'">
+                </td>
                 <td>${u.name}</td>
                 <td>${u.email}</td>
                 <td>
