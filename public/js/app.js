@@ -519,7 +519,28 @@ class ChatApp {
             const otherUser = conv.participants.find(p => p._id !== this.me._id);
             displayName = otherUser ? otherUser.name : 'Unknown';
             avatar = this.getAvatar(displayName, otherUser ? otherUser.avatar : null);
-            document.getElementById('currentChatStatus').textContent = otherUser ? otherUser.email : '';
+
+            // STATUS LOGIC
+            let statusText = '';
+            if (otherUser) {
+                const isOnline = this.onlineUsers.some(u => u._id === otherUser._id);
+                if (isOnline) {
+                    statusText = 'online';
+                } else if (otherUser.lastSeen) {
+                    const date = new Date(otherUser.lastSeen);
+                    const now = new Date();
+                    const diffMins = Math.floor((now - date) / 60000);
+
+                    if (diffMins < 1) statusText = 'Last seen just now';
+                    else if (diffMins < 60) statusText = `Last seen ${diffMins}m ago`;
+                    else if (diffMins < 1440) statusText = `Last seen ${Math.floor(diffMins / 60)}h ago`;
+                    else statusText = `Last seen ${date.toLocaleDateString()}`;
+                } else {
+                    statusText = 'offline';
+                }
+            }
+            document.getElementById('currentChatStatus').textContent = statusText;
+
         } else if (type === 'channel') {
             avatar = '<div style="width: 100%; height: 100%; border-radius: 50%; background: linear-gradient(135deg, #FF9966, #FF5E62); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">#</div>';
             document.getElementById('currentChatStatus').textContent = `${conv.subscriberCount || 0} subscribers`;
@@ -721,7 +742,7 @@ class ChatApp {
         } else {
             const html = `
                 <p style="margin-bottom: 15px; color: var(--text-secondary);">Select a conversation to send the invite:</p>
-                <div style="max-height: 300px; overflow-y: auto;">
+                <div style="max-height: 60vh; overflow-y: auto; padding-right: 5px;" class="custom-scroll">
                     ${dms.map(dm => {
                 const otherUser = dm.participants.find(p => p._id !== this.me._id);
                 if (!otherUser) return '';
@@ -774,12 +795,68 @@ class ChatApp {
 
     }
 
+    async saveProfile() {
+        const name = document.getElementById('settingsName').value.trim();
+        const bio = document.getElementById('settingsBio').value.trim();
+        const fileInput = document.getElementById('settingsAvatar');
+        const statusDiv = document.getElementById('settingsStatus');
+        const file = fileInput.files[0];
+
+        if (!name) {
+            statusDiv.innerHTML = '<span style="color: #ff4444;">Name cannot be empty</span>';
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('bio', bio);
+        if (file) {
+            formData.append('avatar', file);
+        }
+
+        try {
+            statusDiv.innerHTML = '<span style="color: var(--text-secondary);">Saving...</span>';
+            const btn = document.querySelector('button[onclick="saveProfile()"]');
+            if (btn) btn.disabled = true;
+
+            const res = await fetch('/me/update', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!res.ok) throw new Error('Failed to update profile');
+
+            const updatedUser = await res.json();
+            this.me = updatedUser;
+            window.me = updatedUser;
+
+            statusDiv.innerHTML = '<span style="color: var(--accent-green);">Saved successfully!</span>';
+
+            // Re-render to show changes immediately without reload
+            if (this.currentTab === 'dms') this.renderConversations(this.dmConversations);
+
+            setTimeout(() => {
+                document.getElementById('settingsModal').classList.remove('show');
+                statusDiv.innerHTML = '';
+                if (btn) btn.disabled = false;
+            }, 1000);
+
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            statusDiv.innerHTML = '<span style="color: #ff4444;">Failed to update profile</span>';
+            const btn = document.querySelector('button[onclick="saveProfile()"]');
+            if (btn) btn.disabled = false;
+        }
+    }
+
     async showSettingsModal() {
         const modal = document.getElementById('settingsModal');
         const nameInput = document.getElementById('settingsName');
+        const bioInput = document.getElementById('settingsBio');
         const preview = document.getElementById('settingsAvatarPreview');
 
         nameInput.value = this.me.name;
+        bioInput.value = this.me.bio || '';
         preview.innerHTML = this.getAvatar(this.me.name, this.me.avatar);
 
         // Reset status
@@ -799,102 +876,31 @@ class ChatApp {
             }
         };
 
-        // Add Logout Button (if not already present or just simple re-render)
-        const settingsStatus = document.getElementById('settingsStatus');
-        // Clear previous buttons if any appended manually
+        // Add Logout Button
         const existingLogout = document.getElementById('settingsLogoutBtn');
         if (existingLogout) existingLogout.remove();
 
         const logoutBtn = document.createElement('button');
         logoutBtn.id = 'settingsLogoutBtn';
-        logoutBtn.className = 'btn secondary';
-        logoutBtn.style.marginTop = '15px';
+        logoutBtn.className = 'btn';
+        logoutBtn.style.marginTop = '10px';
         logoutBtn.style.width = '100%';
+        logoutBtn.style.padding = '12px';
+        logoutBtn.style.background = 'rgba(255, 68, 68, 0.1)';
         logoutBtn.style.color = '#ff4444';
-        logoutBtn.style.borderColor = '#ff4444';
+        logoutBtn.style.border = 'none';
+        logoutBtn.style.borderRadius = '8px';
+        logoutBtn.style.fontWeight = '500';
+        logoutBtn.style.cursor = 'pointer';
         logoutBtn.textContent = 'Log Out';
         logoutBtn.onclick = () => window.location.href = '/auth/logout';
+        logoutBtn.onmouseover = () => logoutBtn.style.background = 'rgba(255, 68, 68, 0.2)';
+        logoutBtn.onmouseout = () => logoutBtn.style.background = 'rgba(255, 68, 68, 0.1)';
 
-        // Append after the save button if possible, or to the modal content end.
-        // The modal HTML structure in index.html is likely static. 
-        // Let's append it to the settings status container for now, or the form container.
-        // Actually, let's just insert it after the Save button.
-        const saveBtn = document.querySelector('#settingsModal .btn.primary');
-        if (saveBtn && saveBtn.parentNode) {
-            saveBtn.parentNode.insertBefore(logoutBtn, saveBtn.nextSibling);
-        } else {
-            // Fallback
-            settingsStatus.appendChild(logoutBtn);
-        }
+        const body = document.getElementById('settingsBody');
+        body.appendChild(logoutBtn);
 
         modal.classList.add('show');
-    }
-
-    async toggleSubscription(channelId, isSubscribed) {
-        try {
-            const endpoint = isSubscribed ? 'leave' : 'join';
-            const res = await fetch(`/channels/${channelId}/${endpoint}`, { method: 'POST' });
-            if (!res.ok) throw new Error(`Failed to ${endpoint} channel`);
-
-            // Reload channel data
-            await this.loadChannels();
-            // Reload current view
-            const conv = this.channels.find(c => c._id === channelId);
-            if (conv && this.currentConversation.id === channelId) {
-                // Update header
-                document.getElementById('currentChatStatus').textContent = `${conv.participants.length} subscribers`;
-                // Re-run selectConversation logic to update button
-                this.selectConversation(channelId, 'channel');
-            }
-            Toast.show(isSubscribed ? 'Unsubscribed' : 'Subscribed!', 'success');
-        } catch (err) {
-            console.error(err);
-            Toast.show('Action failed', 'error');
-        }
-    }
-
-    async saveProfile() {
-
-        const name = document.getElementById('settingsName').value.trim();
-        const fileInput = document.getElementById('settingsAvatar');
-        const statusDiv = document.getElementById('settingsStatus');
-        const file = fileInput.files[0];
-
-        if (!name) {
-            statusDiv.innerHTML = '<span style="color: #ff4444;">Name cannot be empty</span>';
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('name', name);
-        if (file) {
-            formData.append('avatar', file);
-        }
-
-        try {
-            statusDiv.innerHTML = '<span style="color: var(--text-secondary);">Saving...</span>';
-
-            const res = await fetch('/me/update', {
-                method: 'POST',
-                body: formData
-            });
-
-            if (!res.ok) throw new Error('Failed to update profile');
-
-            const updatedUser = await res.json();
-            this.me = updatedUser;
-            window.me = updatedUser;
-
-            statusDiv.innerHTML = '<span style="color: var(--accent-green);">Profile updated! Reloading...</span>';
-
-            setTimeout(() => {
-                location.reload();
-            }, 1000);
-
-        } catch (error) {
-            console.error('Error updating profile:', error);
-            statusDiv.innerHTML = '<span style="color: #ff4444;">Failed to update profile</span>';
-        }
     }
 
     // ===== SIDEBAR NAVIGATION =====

@@ -4,6 +4,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, unique: true },
   name: String,
   avatar: String,
+  bio: { type: String, default: "" },
   lastSeen: Date,
   savedMessages: [{ type: mongoose.Schema.Types.ObjectId, ref: "Message" }]
 

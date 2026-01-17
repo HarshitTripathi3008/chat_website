@@ -40,6 +40,9 @@ module.exports = (io, useRedis, pub, sub) => {
 
         socket.emit("me", user);
 
+        // Set user to online (lastSeen: null)
+        await User.findByIdAndUpdate(user._id, { lastSeen: null });
+
         // Broadcast online users
         const onlineUsers = await User.find({ lastSeen: null });
         io.emit("onlineUsers", onlineUsers);

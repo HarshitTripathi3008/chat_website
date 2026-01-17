@@ -14,9 +14,10 @@ router.get("/me", async (req, res) => {
 
 router.post("/me/update", requireAuth, upload.single("avatar"), async (req, res) => {
     try {
-        const { name } = req.body;
+        const { name, bio } = req.body;
         const updateData = {};
         if (name) updateData.name = name;
+        if (bio !== undefined) updateData.bio = bio;
         if (req.file) updateData.avatar = req.file.path;
 
         const user = await User.findByIdAndUpdate(req.session.userId, updateData, { new: true });

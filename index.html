@@ -244,37 +244,50 @@
 
   <!-- Settings Modal -->
   <div class="modal" id="settingsModal">
-    <div class="modal-content">
-      <h2>Profile Settings</h2>
-      <div id="settingsBody" style="display: flex; flex-direction: column; gap: 15px;">
-        <!-- Avatar Preview -->
-        <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+    <div class="modal-content" style="max-width: 400px;">
+      <h2 style="margin-bottom: 20px;">Edit Profile</h2>
+      <div id="settingsBody" style="display: flex; flex-direction: column; gap: 20px;">
+
+        <!-- Avatar Section -->
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
           <div id="settingsAvatarPreview"
-            style="width: 80px; height: 80px; border-radius: 50%; background: var(--telegram-blue); color: white; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; overflow: hidden;">
+            style="width: 100px; height: 100px; border-radius: 50%; background: var(--bg-secondary); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: bold; overflow: hidden; border: 2px solid var(--border-color);">
             <!-- Img or Initial will be set by JS -->
           </div>
+          <label for="settingsAvatar"
+            style="cursor: pointer; color: var(--telegram-blue); font-size: 14px; font-weight: 500;">
+            Change Profile Photo
+          </label>
+          <input type="file" id="settingsAvatar" accept="image/*" hidden>
         </div>
 
-        <div>
-          <label style="display: block; margin-bottom: 5px; color: var(--text-secondary); font-size: 13px;">Display
-            Name</label>
-          <input type="text" id="settingsName" placeholder="Your Name"
-            style="width: 100%; padding: 10px; background: var(--bg-darker); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-primary);">
-        </div>
-
+        <!-- Name Section -->
         <div>
           <label
-            style="display: block; margin-bottom: 5px; color: var(--text-secondary); font-size: 13px;">Avatar</label>
-          <input type="file" id="settingsAvatar" accept="image/*"
-            style="width: 100%; padding: 10px; background: var(--bg-darker); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-primary);">
+            style="display: block; margin-bottom: 8px; color: var(--text-secondary); font-size: 13px; font-weight: 500;">DISPLAY
+            NAME</label>
+          <input type="text" id="settingsName" placeholder="Your Name"
+            style="width: 100%; padding: 12px; background: var(--bg-darker); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); font-size: 15px;">
         </div>
 
-        <div id="settingsStatus" style="font-size: 13px; min-height: 20px;"></div>
-      </div>
-      <div class="modal-actions">
-        <button onclick="closeModal()"
-          style="background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color);">Cancel</button>
-        <button onclick="saveProfile()" style="background: var(--telegram-blue); color: white;">Save Changes</button>
+        <!-- Bio Section -->
+        <div>
+          <label
+            style="display: block; margin-bottom: 8px; color: var(--text-secondary); font-size: 13px; font-weight: 500;">BIO</label>
+          <textarea id="settingsBio" placeholder="Add a few words about yourself..." rows="3"
+            style="width: 100%; padding: 12px; background: var(--bg-darker); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); font-size: 14px; resize: none;"></textarea>
+        </div>
+
+        <div id="settingsStatus" style="font-size: 13px; min-height: 20px; text-align: center;"></div>
+
+        <!-- Actions -->
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+          <button onclick="closeModal()"
+            style="flex: 1; padding: 12px; background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; font-weight: 500;">Cancel</button>
+          <button onclick="saveProfile()"
+            style="flex: 1; padding: 12px; background: var(--telegram-blue); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">Save</button>
+        </div>
+
       </div>
     </div>
   </div>
