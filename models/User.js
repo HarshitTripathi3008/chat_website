@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
   avatar: String,
   bio: { type: String, default: "" },
   lastSeen: Date,
+  isBanned: { type: Boolean, default: false },
   savedMessages: [{ type: mongoose.Schema.Types.ObjectId, ref: "Message" }]
 
 }, { timestamps: true });
