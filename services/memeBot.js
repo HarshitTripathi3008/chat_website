@@ -40,7 +40,9 @@ const SOURCES = {
 
 
     political: [
-        'india'
+        'IndianDankMemes',
+        'librandu',
+        'IndianPoliticalMemes'
     ],
 
     instagram: [
@@ -64,7 +66,7 @@ const SOURCES = {
         'cryptomemes',
         'wallstreetbets'
     ],
-    
+
 
     anime: [
         'AnimeIndia',
@@ -133,7 +135,7 @@ class MemeBot {
             { name: "Crypto & Stonks", category: 'crypto', description: "To the moon! 🚀" },
             { name: "Anime Weebs", category: 'anime', description: "I noticed you notice me senpai" },
             { name: "Sports Central", category: 'sports', description: "Cricket, Football & More" },
-            
+
 
         ];
 
