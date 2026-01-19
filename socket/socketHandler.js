@@ -4,6 +4,8 @@ const path = require('path');
 const User = require("../models/User");
 const Message = require("../models/Message");
 const Conversation = require("../models/Conversation");
+const { cloudinary } = require('../config/cloudinary');
+const { getUserDriveClient } = require('../config/googleDrive');
 
 const typingTimeouts = new Map();
 const connectedUsers = new Map(); // userId -> socketId
@@ -192,12 +194,43 @@ module.exports = (io, useRedis, pub, sub) => {
 
             if (deleteForEveryone) {
                 // Hard Delete logic
-                if (message.file && message.file.url && message.file.url.startsWith('/uploads/')) {
-                    const filePath = path.join(__dirname, '..', message.file.url);
-                    fs.unlink(filePath, (err) => {
-                        if (err) console.error("Failed to delete file:", filePath, err.message);
-                        else console.log("Deleted file:", filePath);
-                    });
+                // Hard Delete logic
+                if (message.file && message.file.url) {
+                    const fileId = message.file.id;
+
+                    if (fileId) {
+                        try {
+                            const isCloudinary = message.type === 'image' || message.type === 'voice' || message.file.url.includes('cloudinary');
+
+                            if (isCloudinary) {
+                                // Cloudinary Deletion
+                                const resourceType = message.type === 'voice' ? 'video' : 'image';
+                                await cloudinary.uploader.destroy(fileId, { resource_type: resourceType });
+                                console.log("Deleted from Cloudinary:", fileId);
+                            } else {
+                                // Google Drive Deletion
+                                // We need the message owner's tokens
+                                const msgOwner = await User.findById(message.userId).select('googleAccessToken googleRefreshToken');
+
+                                if (msgOwner && msgOwner.googleAccessToken) {
+                                    const drive = getUserDriveClient(msgOwner.googleAccessToken, msgOwner.googleRefreshToken);
+                                    if (drive) {
+                                        await drive.files.delete({ fileId });
+                                        console.log("Deleted from Google Drive:", fileId);
+                                    }
+                                }
+                            }
+                        } catch (err) {
+                            console.error("Failed to delete remote file:", err.message);
+                        }
+                    } else if (message.file.url.startsWith('/uploads/')) {
+                        // Legacy Local File Deletion
+                        const filePath = path.join(__dirname, '..', message.file.url);
+                        fs.unlink(filePath, (err) => {
+                            if (err) console.error("Failed to delete file:", filePath, err.message);
+                            else console.log("Deleted file:", filePath);
+                        });
+                    }
                 }
 
                 await Message.deleteOne({ _id: messageId });

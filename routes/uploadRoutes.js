@@ -37,7 +37,8 @@ router.post("/upload", requireAuth, upload.single("file"), async (req, res) => {
             type,
             file: {
                 name: req.file.originalname,
-                url: req.file.path // Storage URL
+                url: req.file.path, // Storage URL
+                id: req.file.filename
             }
         };
 
@@ -66,6 +67,7 @@ router.post("/upload/voice", requireAuth, upload.single("audio"), async (req, re
             type: "voice",
             file: {
                 url: req.file.path, // Storage URL
+                id: req.file.filename,
                 duration: parseFloat(req.body.duration),
                 waveform: JSON.parse(req.body.waveform || '[]')
             }

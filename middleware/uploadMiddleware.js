@@ -1,7 +1,7 @@
 const multer = require("multer");
-const GoogleDriveStorage = require("./googleDriveStorage");
+const HybridStorage = require("./hybridStorage");
 
-const storage = GoogleDriveStorage();
+const storage = HybridStorage();
 
 const upload = multer({ storage });
 

@@ -8,7 +8,8 @@ const messageSchema = new mongoose.Schema({
   metadata: mongoose.Schema.Types.Mixed, // For room invite data
   file: {
     name: String,
-    url: String
+    url: String,
+    id: String
   },
   conversationId: { type: mongoose.Schema.Types.ObjectId, ref: "Conversation" },
   reactions: [{
