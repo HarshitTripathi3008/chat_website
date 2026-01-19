@@ -18,6 +18,10 @@
         <aside class="sidebar">
             <div class="sidebar-header">
                 <h2>Admin</h2>
+                <button id="adminSidebarClose"
+                    style="display: none; background: transparent; border: none; font-size: 24px; color: var(--admin-text-muted); cursor: pointer; margin-left: auto; margin-right: 15px;">
+                    &times;
+                </button>
             </div>
             <nav class="sidebar-nav">
                 <a href="#" class="nav-item active" data-tab="overview">
@@ -36,6 +40,11 @@
         <main class="main-content">
             <!-- Header -->
             <header class="top-bar">
+                <!-- Hamburger (Mobile Only) -->
+                <button id="adminSidebarToggle" class="sidebar-toggle-btn"
+                    style="display: none; background: transparent; border: none; font-size: 24px; color: var(--admin-text-main); margin-right: 15px; cursor: pointer;">
+                    ☰
+                </button>
                 <h1>Dashboard</h1>
                 <div class="user-info">
                     <button id="cleanupBtn"
