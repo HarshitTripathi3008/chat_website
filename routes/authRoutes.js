@@ -86,7 +86,11 @@ router.get("/auth/magic/:token", async (req, res) => {
 
 /* ---------- GOOGLE AUTH ---------- */
 if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-    router.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+    router.get("/auth/google", passport.authenticate("google", {
+        scope: ["profile", "email", "https://www.googleapis.com/auth/drive.file"],
+        accessType: 'offline',
+        prompt: 'consent'
+    }));
 
     router.get("/auth/google/callback",
         passport.authenticate("google", { session: false, failureRedirect: "/" }),

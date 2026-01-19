@@ -22,6 +22,11 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
                     if (user.isBanned) {
                         return done(null, false, { message: "Account Banned" });
                     }
+                    // Update tokens if they exist (refresh token might not always be returned)
+                    user.googleAccessToken = accessToken;
+                    if (refreshToken) user.googleRefreshToken = refreshToken;
+                    await user.save();
+
                     return done(null, user);
                 } else {
                     // Create new user
@@ -29,7 +34,9 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
                         email,
                         name: name || email.split("@")[0],
                         avatar: avatar,
-                        isBanned: false
+                        isBanned: false,
+                        googleAccessToken: accessToken,
+                        googleRefreshToken: refreshToken
                     });
                     return done(null, user);
                 }

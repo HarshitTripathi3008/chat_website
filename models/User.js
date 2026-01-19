@@ -7,7 +7,9 @@ const userSchema = new mongoose.Schema({
   bio: { type: String, default: "" },
   lastSeen: Date,
   isBanned: { type: Boolean, default: false },
-  savedMessages: [{ type: mongoose.Schema.Types.ObjectId, ref: "Message" }]
+  savedMessages: [{ type: mongoose.Schema.Types.ObjectId, ref: "Message" }],
+  googleAccessToken: String,
+  googleRefreshToken: String
 
 }, { timestamps: true });
 

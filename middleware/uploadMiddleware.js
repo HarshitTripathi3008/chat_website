@@ -1,5 +1,7 @@
 const multer = require("multer");
-const { storage } = require("../config/cloudinary");
+const GoogleDriveStorage = require("./googleDriveStorage");
+
+const storage = GoogleDriveStorage();
 
 const upload = multer({ storage });
 
