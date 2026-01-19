@@ -1,16 +1,31 @@
-/* ===== TELEGRAM-STYLE THEME ===== */
+/* ===== GLASSMORPHISM THEME ===== */
 :root {
+  /* Core Colors (Transparent) */
   --telegram-blue: #0088cc;
   --telegram-blue-dark: #006ba1;
   --telegram-blue-light: #40a7e3;
-  --bg-dark: #0e1621;
-  --bg-darker: #0a0e15;
-  --bg-chat: #17212b;
-  --bg-message-out: #2b5278;
-  --bg-message-in: #182533;
+
+  /* Glass Backgrounds */
+  --bg-dark: rgba(14, 22, 33, 0.4);
+  /* Main Translucency */
+  --bg-darker: rgba(10, 14, 21, 0.6);
+  /* Darker Elements (Sidebar) */
+  --bg-chat: rgba(23, 33, 43, 0.4);
+  /* Message Area */
+
+  /* Message Bubbles (Glassy) */
+  --bg-message-out: rgba(43, 82, 120, 0.85);
+  --bg-message-in: rgba(24, 37, 51, 0.7);
+
+  --bg-secondary: var(--bg-chat);
+  /* Compatibility alias */
+
   --text-primary: #ffffff;
-  --text-secondary: #aaaaaa;
-  --border-color: #1c2733;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+
+  /* Borders & Highlights */
+  --border-color: rgba(255, 255, 255, 0.1);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.1);
   --accent-green: #00a884;
 }
 
@@ -21,19 +36,42 @@
   box-sizing: border-box;
 }
 
-
 html {
   scroll-behavior: smooth;
 }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background: var(--bg-dark);
+
+  /* Premium Mesh Gradient Background */
+  background:
+    radial-gradient(circle at 0% 0%, rgba(55, 0, 60, 0.8) 0%, transparent 50%),
+    radial-gradient(circle at 100% 0%, rgba(0, 40, 80, 0.8) 0%, transparent 50%),
+    radial-gradient(circle at 100% 100%, rgba(40, 0, 60, 0.8) 0%, transparent 50%),
+    radial-gradient(circle at 0% 100%, rgba(0, 20, 40, 0.8) 0%, transparent 50%),
+    linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+
+  background-size: 200% 200%;
+  animation: gradientBG 15s ease infinite;
+
   height: 100vh;
   height: 100dvh;
-  /* Dynamic Viewport Height for Mobile */
   overflow: hidden;
   color: var(--text-primary);
+}
+
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 button,
@@ -56,9 +94,12 @@ button:active,
 .sidebar {
   width: 30%;
   background: var(--bg-darker);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   display: flex;
   flex-direction: column;
-  border-right: 1px solid var(--border-color);
+  border-right: var(--glass-border);
+  box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2);
 }
 
 .sidebar-header {
@@ -93,6 +134,8 @@ button:active,
   transition: all 0.2s;
   border-bottom: 2px solid transparent;
   margin-bottom: -2px;
+  border-radius: 8px 8px 0 0;
+  /* Modern look */
 }
 
 .tab-btn:hover {
@@ -133,20 +176,23 @@ button:active,
 }
 
 .chat-list::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
+  /* Slimmer */
 }
 
 .chat-list::-webkit-scrollbar-track {
-  background: var(--bg-darker);
+  background: transparent;
+  /* Invisible track */
 }
 
 .chat-list::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  transition: background 0.2s;
 }
 
 .chat-list::-webkit-scrollbar-thumb:hover {
-  background: #2a3942;
+  background: rgba(255, 255, 255, 0.4);
 }
 
 .chat-item {
@@ -262,6 +308,30 @@ button:active,
   padding: 0 6px;
 }
 
+/* Feature Icon Buttons (Settings, Saved) */
+.feature-icon-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 16px;
+}
+
+.feature-icon-btn:hover {
+  background: var(--telegram-blue-light);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 0 10px rgba(0, 136, 204, 0.4);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
 .new-chat-btn {
   background: var(--telegram-blue);
   border: none;
@@ -277,7 +347,9 @@ button:active,
 .new-chat-btn:hover {
   background: var(--telegram-blue-light);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 136, 204, 0.3);
+  box-shadow: 0 0 15px rgba(0, 136, 204, 0.5);
+  /* Stronger glow */
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 /* ===== CHAT AREA ===== */
@@ -286,6 +358,8 @@ button:active,
   display: flex;
   flex-direction: column;
   background: var(--bg-dark);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .chat-header {
@@ -293,9 +367,11 @@ button:active,
   align-items: center;
   justify-content: space-between;
   padding: 15px 20px;
-  background: var(--bg-secondary);
-  border-bottom: 1px solid var(--border-color);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: rgba(23, 33, 43, 0.6);
+  /* Slightly more opaque for header */
+  backdrop-filter: blur(20px);
+  border-bottom: var(--glass-border);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .chat-header-left {
@@ -387,19 +463,22 @@ button:active,
   }
 }
 
-/* Telegram-style bubble tails */
+/* Telegram-style bubble tails (Modified for Glass) */
 .sent {
   background: var(--bg-message-out);
+  backdrop-filter: blur(4px);
   color: white;
   margin-left: auto;
   border-bottom-right-radius: 4px;
   position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .sent::after {
   content: '';
   position: absolute;
-  bottom: 0;
+  bottom: -1px;
+  /* Adjust for border */
   right: -8px;
   width: 0;
   height: 0;
@@ -410,15 +489,17 @@ button:active,
 
 .received {
   background: var(--bg-message-in);
+  backdrop-filter: blur(4px);
   color: var(--text-primary);
   border-bottom-left-radius: 4px;
   position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .received::after {
   content: '';
   position: absolute;
-  bottom: 0;
+  bottom: -1px;
   left: -8px;
   width: 0;
   height: 0;
@@ -470,12 +551,14 @@ button:active,
 }
 
 .modal-content {
-  background-color: var(--bg-chat);
+  background: rgba(30, 40, 50, 0.85);
+  backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   padding: 24px;
   border-radius: 16px;
   width: 90%;
   max-width: 400px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
   color: var(--text-primary);
   animation: modalSlideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
@@ -503,13 +586,16 @@ button:active,
 }
 
 .login-box {
-  background: var(--bg-chat);
+  background: rgba(23, 33, 43, 0.6);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 40px;
   border-radius: 16px;
   width: 360px;
   text-align: center;
   color: white;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
 }
 
 .login-box h2 {
@@ -598,7 +684,162 @@ button:active,
   background: #f1f1f1;
 }
 
-/* ===== SIDEBAR TRANSITIONS ===== */
+/* ===== SETTINGS & PROFILE MODALS ===== */
+.settings-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.avatar-upload-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.settings-avatar-preview {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  font-weight: bold;
+  overflow: hidden;
+  border: 2px solid var(--border-color);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s;
+}
+
+.settings-avatar-preview:hover {
+  border-color: var(--telegram-blue);
+  box-shadow: 0 0 15px rgba(0, 136, 204, 0.3);
+}
+
+.settings-label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.settings-input,
+.settings-textarea {
+  width: 100%;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  /* Darker glass for inputs */
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-size: 15px;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.settings-input:focus,
+.settings-textarea:focus {
+  background: rgba(0, 0, 0, 0.4);
+  border-color: var(--telegram-blue);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 136, 204, 0.2);
+}
+
+.settings-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn-cancel {
+  flex: 1;
+  padding: 12px;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+}
+
+.btn-save {
+  flex: 1;
+  padding: 12px;
+  background: var(--telegram-blue);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-save:hover {
+  background: var(--telegram-blue-light);
+  box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Profile Read-Only */
+.profile-modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  padding-bottom: 10px;
+}
+
+.profile-avatar-large {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 45px;
+  font-weight: bold;
+  overflow: hidden;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.profile-name {
+  margin: 0;
+  font-size: 24px;
+  color: var(--text-primary);
+  font-weight: 700;
+  text-align: center;
+}
+
+.profile-status {
+  color: var(--telegram-blue-light);
+  font-size: 14px;
+  margin-top: 4px;
+  text-align: center;
+}
+
+.profile-section {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 16px;
+  border-radius: 12px;
+  margin-top: 8px;
+  border: 1px solid var(--border-color);
+}
+
 .sidebar {
   transition: width 0.3s ease, transform 0.3s ease;
 }

@@ -60,27 +60,35 @@
 }
 
 .file-btn,
-.emoji-btn {
-    background: transparent;
+.emoji-btn,
+.mic-btn {
+    background: rgba(255, 255, 255, 0.05);
+    /* Subtle glass */
     color: var(--text-secondary);
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     width: 40px;
     height: 40px;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 22px;
+    font-size: 20px;
     transition: all 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-right: 4px;
 }
 
 .file-btn:hover,
-.emoji-btn:hover {
-    background: rgba(0, 136, 204, 0.1);
+.emoji-btn:hover,
+.mic-btn:hover {
+    background: rgba(0, 136, 204, 0.2);
+    border-color: var(--telegram-blue);
     color: var(--telegram-blue);
-    transform: scale(1.1);
+    transform: translateY(-2px);
+    box-shadow: 0 0 8px rgba(0, 136, 204, 0.3);
 }
+
+/* Hover styles merged above */
 
 .typing {
     padding: 8px 20px;
@@ -230,7 +238,8 @@
 
 .search-bar input:focus {
     background: var(--bg-dark);
-    box-shadow: 0 0 0 2px rgba(0, 136, 204, 0.2);
+    box-shadow: 0 0 0 2px rgba(0, 136, 204, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .search-bar input::placeholder {

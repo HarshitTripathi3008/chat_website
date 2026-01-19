@@ -62,23 +62,34 @@
 }
 
 /* Maximize Button - Only visible in minimized mode */
+/* Maximize Button - Only visible in minimized mode */
 .call-modal.minimized .maximize-btn {
     display: flex;
     position: absolute;
-    top: 5px;
-    left: 5px;
-    width: 40px;
-    /* Larger for touch */
-    height: 40px;
-    background: rgba(0, 0, 0, 0.6);
+    top: -10px;
+    /* Slight overlap */
+    left: -10px;
+    width: 36px;
+    height: 36px;
+    background: rgba(0, 136, 204, 0.8);
+    /* Brighter blue base */
+    backdrop-filter: blur(10px);
     border-radius: 50%;
     align-items: center;
     justify-content: center;
     z-index: 20;
     cursor: pointer;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    font-size: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    font-size: 16px;
     color: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    transition: all 0.2s;
+}
+
+.call-modal.minimized .maximize-btn:hover {
+    transform: scale(1.1);
+    background: var(--telegram-blue-light);
+    box-shadow: 0 0 15px rgba(0, 136, 204, 0.6);
 }
 
 .maximize-btn {
@@ -128,7 +139,9 @@
 }
 
 .call-card {
-    background: linear-gradient(135deg, #1c2733, #0e1621);
+    background: rgba(14, 22, 33, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     padding: 30px;
     text-align: center;
     color: white;
@@ -372,16 +385,25 @@
 }
 
 .control-btn {
-    background: transparent;
-    border: none;
-    color: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
     cursor: pointer;
-    font-size: 18px;
-    transition: color 0.2s;
+    font-size: 16px;
+    transition: all 0.2s;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
 }
 
 .control-btn:hover {
-    color: white;
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
 @keyframes bounce {

@@ -1,20 +1,20 @@
 /* Admin Specific Styles - Self-Contained Dark Theme */
 :root {
-    --admin-bg: #0f172a;
-    --admin-card-bg: rgba(30, 41, 59, 0.7);
-    --admin-nav-bg: rgba(15, 23, 42, 0.6);
-    --admin-border: rgba(148, 163, 184, 0.1);
+    --admin-bg: transparent;
+    /* Was #0f172a */
+    --admin-card-bg: rgba(30, 41, 59, 0.4);
+    /* More transparent */
+    --admin-nav-bg: rgba(15, 23, 42, 0.4);
+    --admin-border: rgba(255, 255, 255, 0.1);
     --admin-text-main: #f8fafc;
     --admin-text-muted: #94a3b8;
     --admin-accent: #38bdf8;
-    --admin-hover: rgba(255, 255, 255, 0.05);
+    --admin-hover: rgba(255, 255, 255, 0.1);
 }
 
 body {
-    background-color: var(--admin-bg) !important;
-    background-image:
-        radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.15) 0px, transparent 50%),
-        radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.15) 0px, transparent 50%);
+    /* Inherit gradient from base.css or use transparency */
+    background: transparent !important;
     color: var(--admin-text-main);
     font-family: 'Inter', sans-serif;
     margin: 0;
@@ -31,6 +31,7 @@ body {
     width: 280px;
     background: var(--admin-nav-bg);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-right: 1px solid var(--admin-border);
     display: flex;
     flex-direction: column;
@@ -203,7 +204,9 @@ body {
 }
 
 .data-table tr:hover td {
-    background: var(--admin-hover);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(5px);
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.02);
 }
 
 .data-table td {

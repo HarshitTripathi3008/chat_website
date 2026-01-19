@@ -46,10 +46,8 @@
         </div>
         <div style="display: flex; gap: 8px; align-items: center;">
           <!-- Saved Items Icon -->
-          <button class="new-chat-btn" onclick="switchTab('saved')" title="Saved Items"
-            style="background: transparent; color: var(--text-secondary); padding: 5px; font-size: 18px;">💾</button>
-          <button class="new-chat-btn" onclick="showSettingsModal()"
-            style="background: transparent; color: var(--text-secondary); padding: 5px;">⚙️</button>
+          <button class="feature-icon-btn" onclick="switchTab('saved')" title="Saved Items">💾</button>
+          <button class="feature-icon-btn" onclick="showSettingsModal()" title="Settings">⚙️</button>
           <button class="new-chat-btn" onclick="showNewChatModal()">+ New</button>
         </div>
       </div>
@@ -246,12 +244,11 @@
   <div class="modal" id="settingsModal">
     <div class="modal-content" style="max-width: 400px;">
       <h2 style="margin-bottom: 20px;">Edit Profile</h2>
-      <div id="settingsBody" style="display: flex; flex-direction: column; gap: 20px;">
+      <div id="settingsBody" class="settings-body">
 
         <!-- Avatar Section -->
-        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
-          <div id="settingsAvatarPreview"
-            style="width: 100px; height: 100px; border-radius: 50%; background: var(--bg-secondary); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: bold; overflow: hidden; border: 2px solid var(--border-color);">
+        <div class="avatar-upload-container">
+          <div id="settingsAvatarPreview" class="settings-avatar-preview">
             <!-- Img or Initial will be set by JS -->
           </div>
           <label for="settingsAvatar"
@@ -263,29 +260,23 @@
 
         <!-- Name Section -->
         <div>
-          <label
-            style="display: block; margin-bottom: 8px; color: var(--text-secondary); font-size: 13px; font-weight: 500;">DISPLAY
-            NAME</label>
-          <input type="text" id="settingsName" placeholder="Your Name"
-            style="width: 100%; padding: 12px; background: var(--bg-darker); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); font-size: 15px;">
+          <label class="settings-label">Display Name</label>
+          <input type="text" id="settingsName" placeholder="Your Name" class="settings-input">
         </div>
 
         <!-- Bio Section -->
         <div>
-          <label
-            style="display: block; margin-bottom: 8px; color: var(--text-secondary); font-size: 13px; font-weight: 500;">BIO</label>
-          <textarea id="settingsBio" placeholder="Add a few words about yourself..." rows="3"
-            style="width: 100%; padding: 12px; background: var(--bg-darker); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); font-size: 14px; resize: none;"></textarea>
+          <label class="settings-label">Bio</label>
+          <textarea id="settingsBio" placeholder="Add a few words about yourself..." rows="3" class="settings-textarea"
+            style="resize: none;"></textarea>
         </div>
 
         <div id="settingsStatus" style="font-size: 13px; min-height: 20px; text-align: center;"></div>
 
         <!-- Actions -->
-        <div style="display: flex; gap: 10px; margin-top: 10px;">
-          <button onclick="closeModal()"
-            style="flex: 1; padding: 12px; background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; font-weight: 500;">Cancel</button>
-          <button onclick="saveProfile()"
-            style="flex: 1; padding: 12px; background: var(--telegram-blue); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">Save</button>
+        <div class="settings-actions">
+          <button onclick="closeModal()" class="btn-cancel">Cancel</button>
+          <button onclick="saveProfile()" class="btn-save">Save</button>
         </div>
 
       </div>
@@ -297,32 +288,26 @@
           <button class="close-btn" onclick="closeModal()">&times;</button>
         </div>
 
-        <div style="display: flex; flex-direction: column; align-items: center; gap: 15px; padding-bottom: 20px;">
+        <div class="profile-modal-content">
           <!-- Avatar -->
-          <div id="userProfileAvatar"
-            style="width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: bold; overflow: hidden; border: 3px solid var(--bg-secondary); box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+          <div id="userProfileAvatar" class="profile-avatar-large">
           </div>
 
           <!-- Name & Status -->
-          <div style="text-align: center;">
-            <h2 id="userProfileName" style="margin: 0; font-size: 22px; color: var(--text-primary);"></h2>
-            <div id="userProfileStatus" style="color: var(--telegram-blue-light); font-size: 14px; margin-top: 4px;">
-            </div>
+          <div>
+            <h2 id="userProfileName" class="profile-name"></h2>
+            <div id="userProfileStatus" class="profile-status"></div>
           </div>
 
           <!-- Bio -->
-          <div style="width: 100%; background: var(--bg-darker); padding: 15px; border-radius: 12px; margin-top: 10px;">
-            <div
-              style="color: var(--text-secondary); font-size: 12px; font-weight: 600; margin-bottom: 5px; text-transform: uppercase;">
-              BIO</div>
+          <div class="profile-section">
+            <div class="settings-label">Bio</div>
             <div id="userProfileBio" style="color: var(--text-primary); font-size: 14px; line-height: 1.5;"></div>
           </div>
 
           <!-- Email (Optional/Hidden if not shared) -->
           <div style="width: 100%;" id="userProfileEmailContainer">
-            <div
-              style="color: var(--text-secondary); font-size: 12px; font-weight: 600; margin-bottom: 5px; text-transform: uppercase;">
-              EMAIL</div>
+            <div class="settings-label">Email</div>
             <div id="userProfileEmail" style="color: var(--text-primary); font-size: 14px;"></div>
           </div>
 

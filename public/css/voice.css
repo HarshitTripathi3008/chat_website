@@ -186,27 +186,9 @@
     border-color: var(--telegram-blue);
 }
 
-/* Microphone Button */
-.mic-btn {
-    background: transparent;
-    color: var(--text-secondary);
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 22px;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+/* Mic button style moved to components.css for consistency */
 
-.mic-btn:hover {
-    background: rgba(0, 136, 204, 0.1);
-    color: var(--telegram-blue);
-    transform: scale(1.1);
-}
+/* Mic specific animation */
 
 .mic-btn.recording {
     background: #ff4444;
