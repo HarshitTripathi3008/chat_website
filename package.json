@@ -1,7 +1,7 @@
 {
-  "name": "socketio-chat-app",
+  "name": "trilink",
   "version": "1.0.0",
-  "description": "A real-time chat application using Socket.IO and Express",
+  "description": "TriLink - Real-time Connect",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
