@@ -3,6 +3,7 @@ import { ReplyManager } from './reply.js';
 import { EditDeleteManager } from './editDelete.js';
 import { EmojiManager } from './emoji.js';
 import { Toast } from './toast.js';
+import { NotificationManager } from './notifications.js';
 
 
 class ChatApp {
@@ -40,6 +41,14 @@ class ChatApp {
 
             this.initSocket();
             this.initManagers();
+
+            // Request notification permission on first interaction
+            document.addEventListener('click', () => {
+                if (window.notificationManager && window.notificationManager.permission === 'default') {
+                    window.notificationManager.requestPermission();
+                }
+            }, { once: true });
+
             this.loadInitialData();
 
             // Check if user just joined a room via invite link
@@ -109,6 +118,7 @@ class ChatApp {
         window.emojiManager.initPicker();
         window.editDeleteManager = new EditDeleteManager(this.socket);
         window.callManager = new CallManager(this.socket, this.me);
+        window.notificationManager = new NotificationManager();
     }
 
     loadInitialData() {
@@ -289,21 +299,7 @@ class ChatApp {
             if (data.conversationId) return;
         } else {
             // NOTIFICATIONS Logic
-            // If message is for a channel I'm subscribed to, but not currently viewing
-            if (data.conversationId && this.currentTab === 'channels') {
-                // Check if I am subscribed to this channel
-                const channel = this.channels.find(c => c._id === data.conversationId);
-
-                // Use robust comparison
-                const isSubscribed = channel && channel.participants && channel.participants.some(p => String(p) === String(this.me._id));
-
-                if (isSubscribed) {
-                    // Check if I'm not viewing it right now
-                    if (this.currentConversation.id !== data.conversationId) {
-                        Toast.show(`New meme in ${channel.name}: ${data.text || 'Image'}`, 'info');
-                    }
-                }
-            }
+            window.notificationManager.handleMessage(data, this.currentConversation);
 
 
             // Only show messages for the current conversation in the chat area
